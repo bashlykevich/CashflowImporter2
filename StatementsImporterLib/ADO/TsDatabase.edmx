@@ -1,0 +1,1446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="OfficialAccountName" Type="nvarchar" MaxLength="250" />
+          <Property Name="PrimaryContactID" Type="uniqueidentifier" />
+          <Property Name="TerritoryID" Type="uniqueidentifier" />
+          <Property Name="AnnualRevenue" Type="int" />
+          <Property Name="EmployeesNumber" Type="int" />
+          <Property Name="OwnerID" Type="uniqueidentifier" />
+          <Property Name="CampaignID" Type="uniqueidentifier" />
+          <Property Name="AddressTypeID" Type="uniqueidentifier" />
+          <Property Name="Address" Type="nvarchar" MaxLength="250" />
+          <Property Name="CityID" Type="uniqueidentifier" />
+          <Property Name="StateID" Type="uniqueidentifier" />
+          <Property Name="ZIP" Type="nvarchar" MaxLength="250" />
+          <Property Name="CountryID" Type="uniqueidentifier" />
+          <Property Name="ActivityID" Type="uniqueidentifier" />
+          <Property Name="FieldID" Type="uniqueidentifier" />
+          <Property Name="Communication1" Type="nvarchar" MaxLength="250" />
+          <Property Name="Communication2" Type="nvarchar" MaxLength="250" />
+          <Property Name="Communication3" Type="nvarchar" MaxLength="250" />
+          <Property Name="Communication4" Type="nvarchar" MaxLength="250" />
+          <Property Name="Communication5" Type="nvarchar" MaxLength="250" />
+          <Property Name="Communication1TypeID" Type="uniqueidentifier" />
+          <Property Name="Communication2TypeID" Type="uniqueidentifier" />
+          <Property Name="Communication3TypeID" Type="uniqueidentifier" />
+          <Property Name="Communication4TypeID" Type="uniqueidentifier" />
+          <Property Name="Communication5TypeID" Type="uniqueidentifier" />
+          <Property Name="Description" Type="image" />
+          <Property Name="AccountTypeID" Type="uniqueidentifier" />
+          <Property Name="Code" Type="nvarchar" MaxLength="250" />
+          <Property Name="TaxRegistrationCode" Type="nvarchar" MaxLength="250" />
+          <Property Name="SettledCredit" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="PostponementPayment" Type="int" />
+          <Property Name="IsForeign" Type="int" />
+          <Property Name="ActivityID2" Type="uniqueidentifier" />
+          <Property Name="ActivityID3" Type="uniqueidentifier" />
+          <Property Name="Object1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="Code1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="UID1C" Type="uniqueidentifier" />
+          <Property Name="UNNIsUnknown" Type="int" />
+          <Property Name="IsOurCompany" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_AdminUnit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="125" />
+          <Property Name="GroupParentID" Type="uniqueidentifier" />
+          <Property Name="IsGroup" Type="int" />
+          <Property Name="GroupPasswordChangePeriodType" Type="int" />
+          <Property Name="UserIsAdmin" Type="int" />
+          <Property Name="UserContactID" Type="uniqueidentifier" />
+          <Property Name="UserPasswordNeverExpired" Type="int" />
+          <Property Name="UserPasswordChangedOn" Type="datetime" />
+          <Property Name="UserIsEnabled" Type="int" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="UserIsSysAdmin" Type="int" />
+          <Property Name="SQLObjectName" Type="nvarchar" MaxLength="125" />
+          <Property Name="IsDomainUnit" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Cashflow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="CashAccountID" Type="uniqueidentifier" />
+          <Property Name="TypeID" Type="nvarchar" MaxLength="250" />
+          <Property Name="RecipientID" Type="uniqueidentifier" />
+          <Property Name="PayerID" Type="uniqueidentifier" />
+          <Property Name="ContactID" Type="uniqueidentifier" />
+          <Property Name="OpportunityID" Type="uniqueidentifier" />
+          <Property Name="ContractID" Type="uniqueidentifier" />
+          <Property Name="InvoiceID" Type="uniqueidentifier" />
+          <Property Name="CampaignID" Type="uniqueidentifier" />
+          <Property Name="StatusID" Type="uniqueidentifier" />
+          <Property Name="PeriodID" Type="uniqueidentifier" />
+          <Property Name="CurrencyID" Type="uniqueidentifier" />
+          <Property Name="CategoryID" Type="uniqueidentifier" />
+          <Property Name="EstimatedDate" Type="datetime" />
+          <Property Name="ActualDate" Type="datetime" />
+          <Property Name="Description" Type="image" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="CurrencyRate" Type="decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAmount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="LinkID" Type="uniqueidentifier" />
+          <Property Name="OwnerID" Type="uniqueidentifier" />
+          <Property Name="ClauseID" Type="uniqueidentifier" />
+          <Property Name="UseAsCashflow" Type="int" />
+          <Property Name="UseAsPandL" Type="int" />
+          <Property Name="AutocalcAmount" Type="int" Nullable="false" />
+          <Property Name="CFNumber" Type="nvarchar" MaxLength="250" />
+          <Property Name="ExpenseTypeID" Type="uniqueidentifier" />
+          <Property Name="ProjectID" Type="uniqueidentifier" />
+          <Property Name="IncidentID" Type="uniqueidentifier" />
+          <Property Name="ServiceAgreementID" Type="uniqueidentifier" />
+          <Property Name="DebtorCreditorID" Type="uniqueidentifier" />
+          <Property Name="ExpactablePayDate" Type="datetime" />
+          <Property Name="DocDate" Type="datetime" />
+          <Property Name="ManagerID" Type="uniqueidentifier" />
+          <Property Name="MailSent" Type="int" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="250" />
+          <Property Name="CompanyID" Type="uniqueidentifier" />
+          <Property Name="Obj1cDocNumIn" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_CashflowRight">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RecordID" Type="uniqueidentifier" />
+          <Property Name="AdminUnitID" Type="uniqueidentifier" />
+          <Property Name="CanRead" Type="int" />
+          <Property Name="CanWrite" Type="int" />
+          <Property Name="CanDelete" Type="int" />
+          <Property Name="CanChangeAccess" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_Contract">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="Title" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="ContractNumber" Type="nvarchar" MaxLength="250" />
+          <Property Name="ContractTypeID" Type="uniqueidentifier" />
+          <Property Name="ParentContractID" Type="uniqueidentifier" />
+          <Property Name="OpportunityID" Type="uniqueidentifier" />
+          <Property Name="ContractStatusID" Type="uniqueidentifier" />
+          <Property Name="OwnerID" Type="uniqueidentifier" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="DueDate" Type="datetime" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+          <Property Name="BillInfoID" Type="uniqueidentifier" />
+          <Property Name="BillingFrequencyID" Type="nvarchar" MaxLength="250" />
+          <Property Name="CurrencyID" Type="uniqueidentifier" />
+          <Property Name="CurrencyRate" Type="decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAmount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="Description" Type="image" />
+          <Property Name="ContactID" Type="uniqueidentifier" />
+          <Property Name="CampaignID" Type="uniqueidentifier" />
+          <Property Name="IncidentID" Type="uniqueidentifier" />
+          <Property Name="WorkflowItemID" Type="uniqueidentifier" />
+          <Property Name="ProjectID" Type="uniqueidentifier" />
+          <Property Name="ManagerOBUKID" Type="uniqueidentifier" />
+          <Property Name="LogisticManagerID" Type="uniqueidentifier" />
+          <Property Name="AdvanceAmount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAdvanceAmount" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="SigneOwnDate" Type="datetime" />
+          <Property Name="RejectionDate" Type="datetime" />
+          <Property Name="SigneClienttDate" Type="datetime" />
+          <Property Name="PlannedAdvanceDate" Type="datetime" />
+          <Property Name="PlannedFullPayDate" Type="datetime" />
+          <Property Name="SupplyStartDate" Type="datetime" />
+          <Property Name="PlannedSupplyFinishDate" Type="datetime" />
+          <Property Name="WorkStartDate" Type="datetime" />
+          <Property Name="PlannedWorkFinishDate" Type="datetime" />
+          <Property Name="AdvancePayDate" Type="datetime" />
+          <Property Name="PlannedProfit" Type="decimal" Precision="15" Scale="4" />
+          <Property Name="PayedAmount" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="FactSupplyFinishDate" Type="datetime" />
+          <Property Name="FactFullPayDate" Type="datetime" />
+          <Property Name="ActClientSigneDate" Type="datetime" />
+          <Property Name="ActOurSigneDate" Type="datetime" />
+          <Property Name="WorkRating" Type="int" />
+          <Property Name="SupplyRating" Type="int" />
+          <Property Name="FactProfit" Type="decimal" Precision="15" Scale="4" />
+          <Property Name="ClientSatisfaction" Type="int" />
+          <Property Name="ResultComments" Type="nvarchar" MaxLength="500" />
+          <Property Name="FactWorkFinishDate" Type="datetime" />
+          <Property Name="AdvanceWithin" Type="int" />
+          <Property Name="Closed" Type="int" />
+          <Property Name="ContractType1" Type="int" />
+          <Property Name="ContractType2" Type="int" />
+          <Property Name="ContractType3" Type="int" />
+          <Property Name="ContractType4" Type="int" />
+          <Property Name="ContractType5" Type="int" />
+          <Property Name="ContractType6" Type="int" />
+          <Property Name="ContractType7" Type="int" />
+          <Property Name="mailSent3" Type="int" />
+          <Property Name="ContractType8" Type="int" />
+          <Property Name="PayedAmountBasic" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="isFrame" Type="int" />
+          <Property Name="IsInvoice" Type="int" />
+          <Property Name="ContractCreationDate" Type="datetime" />
+          <Property Name="NumberTitle" Type="nvarchar" MaxLength="500" />
+          <Property Name="AmountOfOfferings" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfServices" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfOfferingsBasic" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfServicesBasic" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="ProfitPlannedBasic" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="ProfitActualBasic" Type="decimal" Precision="15" Scale="0" />
+          <Property Name="MonthID" Type="nvarchar" MaxLength="250" />
+          <Property Name="MailOnCreate" Type="int" Nullable="false" />
+          <Property Name="TempCompanyFields" Type="uniqueidentifier" />
+          <Property Name="ContractCompanyID" Type="uniqueidentifier" />
+          <Property Name="WasTaskCreated" Type="int" />
+          <Property Name="TermsOfObligations" Type="int" />
+          <Property Name="Maturity" Type="int" />
+          <Property Name="Prepayment" Type="int" />
+          <Property Name="DocumentID" Type="uniqueidentifier" />
+          <Property Name="MailOnProcess" Type="int" Nullable="false" />
+          <Property Name="IsAutoCalculated" Type="int" />
+          <Property Name="ContractDirectionID" Type="nvarchar" MaxLength="250" />
+          <Property Name="MailOnSigned" Type="int" />
+          <Property Name="Object1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="Code1C" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_Invoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime" Nullable="false" />
+          <Property Name="OpportunityID" Type="uniqueidentifier" />
+          <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="250" />
+          <Property Name="ContractID" Type="uniqueidentifier" />
+          <Property Name="PaymentDate" Type="datetime" />
+          <Property Name="SupplierID" Type="uniqueidentifier" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+          <Property Name="CurrencyID" Type="uniqueidentifier" />
+          <Property Name="CurrencyRate" Type="decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BasicAmount" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="CampaignID" Type="uniqueidentifier" />
+          <Property Name="ChannelID" Type="uniqueidentifier" />
+          <Property Name="OwnerID" Type="uniqueidentifier" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="Description" Type="image" />
+          <Property Name="PaymentAmount" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BillStatusID" Type="uniqueidentifier" />
+          <Property Name="ContactID" Type="uniqueidentifier" />
+          <Property Name="WorkflowItemID" Type="uniqueidentifier" />
+          <Property Name="ProjectID" Type="uniqueidentifier" />
+          <Property Name="BasicPaymentAmount" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="ShipmentStateID" Type="uniqueidentifier" />
+          <Property Name="Date1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="Object1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="Code1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="UID1C" Type="uniqueidentifier" />
+          <Property Name="ExpectablePayDate" Type="datetime" />
+          <Property Name="CategoryID" Type="uniqueidentifier" />
+          <Property Name="CompanyID" Type="uniqueidentifier" />
+          <Property Name="PlannedPayDate" Type="datetime" />
+          <Property Name="ManagerID" Type="uniqueidentifier" />
+          <Property Name="InvoicePayType" Type="nvarchar" MaxLength="250" />
+          <Property Name="DelayDays" Type="int" />
+          <Property Name="Database1CIndex" Type="int" />
+          <Property Name="IsRIPE" Type="int" />
+          <Property Name="DocDate" Type="datetime" />
+          <Property Name="MailSent" Type="int" Nullable="false" />
+          <Property Name="TypeID" Type="uniqueidentifier" />
+          <Property Name="LogisticsID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="tbl_Period">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="DueDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FAdminUnitGroupParentID">
+          <End Role="tbl_AdminUnit" Type="Self.tbl_AdminUnit" Multiplicity="0..1" />
+          <End Role="tbl_AdminUnit1" Type="Self.tbl_AdminUnit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminUnit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_AdminUnit1">
+              <PropertyRef Name="GroupParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowContractID">
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowDebtorCreditorID1">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="DebtorCreditorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInvoiceID">
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Invoice">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="InvoiceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPayerID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPeriodID">
+          <End Role="tbl_Period" Type="Self.tbl_Period" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PeriodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRecipientID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="RecipientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRightAdminUnitID">
+          <End Role="tbl_AdminUnit" Type="Self.tbl_AdminUnit" Multiplicity="0..1" />
+          <End Role="tbl_CashflowRight" Type="Self.tbl_CashflowRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminUnit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowRight">
+              <PropertyRef Name="AdminUnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRightRecordID">
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="0..1" />
+          <End Role="tbl_CashflowRight" Type="Self.tbl_CashflowRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowRight">
+              <PropertyRef Name="RecordID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FContractContractCompanyID1">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract">
+              <PropertyRef Name="ContractCompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FContractCustomerID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FContractParentContractID">
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="0..1" />
+          <End Role="tbl_Contract1" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract1">
+              <PropertyRef Name="ParentContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceContractID">
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceCustomerID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceSupplierID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EntitiesStoreContainer">
+          <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_AdminUnit" EntityType="Self.tbl_AdminUnit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Cashflow" EntityType="Self.tbl_Cashflow" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_CashflowRight" EntityType="Self.tbl_CashflowRight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Contract" EntityType="Self.tbl_Contract" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Invoice" EntityType="Self.tbl_Invoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Period" EntityType="Self.tbl_Period" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FAdminUnitGroupParentID" Association="Self.FAdminUnitGroupParentID">
+            <End Role="tbl_AdminUnit" EntitySet="tbl_AdminUnit" />
+            <End Role="tbl_AdminUnit1" EntitySet="tbl_AdminUnit" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowContractID" Association="Self.FCashflowContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowDebtorCreditorID1" Association="Self.FCashflowDebtorCreditorID1">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInvoiceID" Association="Self.FCashflowInvoiceID">
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPayerID" Association="Self.FCashflowPayerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPeriodID" Association="Self.FCashflowPeriodID">
+            <End Role="tbl_Period" EntitySet="tbl_Period" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRecipientID" Association="Self.FCashflowRecipientID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRightAdminUnitID" Association="Self.FCashflowRightAdminUnitID">
+            <End Role="tbl_AdminUnit" EntitySet="tbl_AdminUnit" />
+            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRightRecordID" Association="Self.FCashflowRightRecordID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
+          </AssociationSet>
+          <AssociationSet Name="FContractContractCompanyID1" Association="Self.FContractContractCompanyID1">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FContractCustomerID" Association="Self.FContractCustomerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FContractParentContractID" Association="Self.FContractParentContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Contract1" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceContractID" Association="Self.FInvoiceContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceCustomerID" Association="Self.FInvoiceCustomerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceSupplierID" Association="Self.FInvoiceSupplierID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbl_Account">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="OfficialAccountName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="PrimaryContactID" Type="Guid" />
+          <Property Name="TerritoryID" Type="Guid" />
+          <Property Name="AnnualRevenue" Type="Int32" />
+          <Property Name="EmployeesNumber" Type="Int32" />
+          <Property Name="OwnerID" Type="Guid" />
+          <Property Name="CampaignID" Type="Guid" />
+          <Property Name="AddressTypeID" Type="Guid" />
+          <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CityID" Type="Guid" />
+          <Property Name="StateID" Type="Guid" />
+          <Property Name="ZIP" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CountryID" Type="Guid" />
+          <Property Name="ActivityID" Type="Guid" />
+          <Property Name="FieldID" Type="Guid" />
+          <Property Name="Communication1" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Communication2" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Communication3" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Communication4" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Communication5" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Communication1TypeID" Type="Guid" />
+          <Property Name="Communication2TypeID" Type="Guid" />
+          <Property Name="Communication3TypeID" Type="Guid" />
+          <Property Name="Communication4TypeID" Type="Guid" />
+          <Property Name="Communication5TypeID" Type="Guid" />
+          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="AccountTypeID" Type="Guid" />
+          <Property Name="Code" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="TaxRegistrationCode" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="SettledCredit" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="PostponementPayment" Type="Int32" />
+          <Property Name="IsForeign" Type="Int32" />
+          <Property Name="ActivityID2" Type="Guid" />
+          <Property Name="ActivityID3" Type="Guid" />
+          <Property Name="Object1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Code1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="UID1C" Type="Guid" />
+          <Property Name="UNNIsUnknown" Type="Int32" />
+          <Property Name="IsOurCompany" Type="Int32" />
+          <NavigationProperty Name="tbl_Contract" Relationship="Self.FContractContractCompanyID1" FromRole="tbl_Account" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Contract1" Relationship="Self.FContractCustomerID" FromRole="tbl_Account" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Invoice" Relationship="Self.FInvoiceCustomerID" FromRole="tbl_Account" ToRole="tbl_Invoice" />
+          <NavigationProperty Name="tbl_Invoice1" Relationship="Self.FInvoiceSupplierID" FromRole="tbl_Account" ToRole="tbl_Invoice" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="Entities.FCashflowDebtorCreditorID1" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow1" Relationship="Entities.FCashflowPayerID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow2" Relationship="Entities.FCashflowRecipientID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+        </EntityType>
+        <EntityType Name="tbl_Contract">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="Title" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContractNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ContractTypeID" Type="Guid" />
+          <Property Name="ParentContractID" Type="Guid" />
+          <Property Name="OpportunityID" Type="Guid" />
+          <Property Name="ContractStatusID" Type="Guid" />
+          <Property Name="OwnerID" Type="Guid" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="DueDate" Type="DateTime" Precision="3" />
+          <Property Name="CustomerID" Type="Guid" />
+          <Property Name="BillInfoID" Type="Guid" />
+          <Property Name="BillingFrequencyID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyID" Type="Guid" />
+          <Property Name="CurrencyRate" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAmount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ContactID" Type="Guid" />
+          <Property Name="CampaignID" Type="Guid" />
+          <Property Name="IncidentID" Type="Guid" />
+          <Property Name="WorkflowItemID" Type="Guid" />
+          <Property Name="ProjectID" Type="Guid" />
+          <Property Name="ManagerOBUKID" Type="Guid" />
+          <Property Name="LogisticManagerID" Type="Guid" />
+          <Property Name="AdvanceAmount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAdvanceAmount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="SigneOwnDate" Type="DateTime" Precision="3" />
+          <Property Name="RejectionDate" Type="DateTime" Precision="3" />
+          <Property Name="SigneClienttDate" Type="DateTime" Precision="3" />
+          <Property Name="PlannedAdvanceDate" Type="DateTime" Precision="3" />
+          <Property Name="PlannedFullPayDate" Type="DateTime" Precision="3" />
+          <Property Name="SupplyStartDate" Type="DateTime" Precision="3" />
+          <Property Name="PlannedSupplyFinishDate" Type="DateTime" Precision="3" />
+          <Property Name="WorkStartDate" Type="DateTime" Precision="3" />
+          <Property Name="PlannedWorkFinishDate" Type="DateTime" Precision="3" />
+          <Property Name="AdvancePayDate" Type="DateTime" Precision="3" />
+          <Property Name="PlannedProfit" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="PayedAmount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="FactSupplyFinishDate" Type="DateTime" Precision="3" />
+          <Property Name="FactFullPayDate" Type="DateTime" Precision="3" />
+          <Property Name="ActClientSigneDate" Type="DateTime" Precision="3" />
+          <Property Name="ActOurSigneDate" Type="DateTime" Precision="3" />
+          <Property Name="WorkRating" Type="Int32" />
+          <Property Name="SupplyRating" Type="Int32" />
+          <Property Name="FactProfit" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="ClientSatisfaction" Type="Int32" />
+          <Property Name="ResultComments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FactWorkFinishDate" Type="DateTime" Precision="3" />
+          <Property Name="AdvanceWithin" Type="Int32" />
+          <Property Name="Closed" Type="Int32" />
+          <Property Name="ContractType1" Type="Int32" />
+          <Property Name="ContractType2" Type="Int32" />
+          <Property Name="ContractType3" Type="Int32" />
+          <Property Name="ContractType4" Type="Int32" />
+          <Property Name="ContractType5" Type="Int32" />
+          <Property Name="ContractType6" Type="Int32" />
+          <Property Name="ContractType7" Type="Int32" />
+          <Property Name="mailSent3" Type="Int32" />
+          <Property Name="ContractType8" Type="Int32" />
+          <Property Name="PayedAmountBasic" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="isFrame" Type="Int32" />
+          <Property Name="IsInvoice" Type="Int32" />
+          <Property Name="ContractCreationDate" Type="DateTime" Precision="3" />
+          <Property Name="NumberTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AmountOfOfferings" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfServices" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfOfferingsBasic" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="AmountOfServicesBasic" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="ProfitPlannedBasic" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="ProfitActualBasic" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="MonthID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="MailOnCreate" Type="Int32" Nullable="false" />
+          <Property Name="TempCompanyFields" Type="Guid" />
+          <Property Name="ContractCompanyID" Type="Guid" />
+          <Property Name="WasTaskCreated" Type="Int32" />
+          <Property Name="TermsOfObligations" Type="Int32" />
+          <Property Name="Maturity" Type="Int32" />
+          <Property Name="Prepayment" Type="Int32" />
+          <Property Name="DocumentID" Type="Guid" />
+          <Property Name="MailOnProcess" Type="Int32" Nullable="false" />
+          <Property Name="IsAutoCalculated" Type="Int32" />
+          <Property Name="ContractDirectionID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Account" Relationship="Self.FContractContractCompanyID1" FromRole="tbl_Contract" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account1" Relationship="Self.FContractCustomerID" FromRole="tbl_Contract" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Contract1" Relationship="Self.FContractParentContractID" FromRole="tbl_Contract" ToRole="tbl_Contract1" />
+          <NavigationProperty Name="tbl_Contract2" Relationship="Self.FContractParentContractID" FromRole="tbl_Contract1" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Invoice" Relationship="Self.FInvoiceContractID" FromRole="tbl_Contract" ToRole="tbl_Invoice" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="Entities.FCashflowContractID" FromRole="tbl_Contract" ToRole="tbl_Cashflow" />
+          <Property Name="MailOnSigned" Type="Int32" />
+          <Property Name="Object1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Code1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_Invoice">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OpportunityID" Type="Guid" />
+          <Property Name="InvoiceNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ContractID" Type="Guid" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+          <Property Name="SupplierID" Type="Guid" />
+          <Property Name="CustomerID" Type="Guid" />
+          <Property Name="CurrencyID" Type="Guid" />
+          <Property Name="CurrencyRate" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BasicAmount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="CampaignID" Type="Guid" />
+          <Property Name="ChannelID" Type="Guid" />
+          <Property Name="OwnerID" Type="Guid" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="PaymentAmount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BillStatusID" Type="Guid" />
+          <Property Name="ContactID" Type="Guid" />
+          <Property Name="WorkflowItemID" Type="Guid" />
+          <Property Name="ProjectID" Type="Guid" />
+          <Property Name="BasicPaymentAmount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="ShipmentStateID" Type="Guid" />
+          <Property Name="Date1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Object1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Code1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="UID1C" Type="Guid" />
+          <Property Name="ExpectablePayDate" Type="DateTime" Precision="3" />
+          <Property Name="CategoryID" Type="Guid" />
+          <Property Name="CompanyID" Type="Guid" />
+          <Property Name="PlannedPayDate" Type="DateTime" Precision="3" />
+          <Property Name="ManagerID" Type="Guid" />
+          <Property Name="InvoicePayType" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="DelayDays" Type="Int32" />
+          <Property Name="Database1CIndex" Type="Int32" />
+          <Property Name="IsRIPE" Type="Int32" />
+          <Property Name="DocDate" Type="DateTime" Precision="3" />
+          <Property Name="MailSent" Type="Int32" Nullable="false" />
+          <Property Name="TypeID" Type="Guid" />
+          <Property Name="LogisticsID" Type="Guid" />
+          <NavigationProperty Name="tbl_Account" Relationship="Self.FInvoiceCustomerID" FromRole="tbl_Invoice" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account1" Relationship="Self.FInvoiceSupplierID" FromRole="tbl_Invoice" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Contract" Relationship="Self.FInvoiceContractID" FromRole="tbl_Invoice" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="Entities.FCashflowInvoiceID" FromRole="tbl_Invoice" ToRole="tbl_Cashflow" />
+        </EntityType>
+        <EntityType Name="tbl_Period">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="Entities.FCashflowPeriodID" FromRole="tbl_Period" ToRole="tbl_Cashflow" />
+        </EntityType>
+        <Association Name="FContractContractCompanyID1">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract">
+              <PropertyRef Name="ContractCompanyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FContractCustomerID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceCustomerID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceSupplierID">
+          <End Role="tbl_Account" Type="Self.tbl_Account" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FContractParentContractID">
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="0..1" />
+          <End Role="tbl_Contract1" Type="Self.tbl_Contract" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Contract1">
+              <PropertyRef Name="ParentContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FInvoiceContractID">
+          <End Role="tbl_Contract" Type="Self.tbl_Contract" Multiplicity="0..1" />
+          <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Invoice">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TSXRM3Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbl_Account" EntityType="Self.tbl_Account" />
+          <EntitySet Name="tbl_Contract" EntityType="Self.tbl_Contract" />
+          <EntitySet Name="tbl_Invoice" EntityType="Self.tbl_Invoice" />
+          <EntitySet Name="tbl_Period" EntityType="Self.tbl_Period" />
+          <AssociationSet Name="FContractContractCompanyID1" Association="Self.FContractContractCompanyID1">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FContractCustomerID" Association="Self.FContractCustomerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceCustomerID" Association="Self.FInvoiceCustomerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceSupplierID" Association="Self.FInvoiceSupplierID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FContractParentContractID" Association="Self.FContractParentContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Contract1" EntitySet="tbl_Contract" />
+          </AssociationSet>
+          <AssociationSet Name="FInvoiceContractID" Association="Self.FInvoiceContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+          </AssociationSet>
+          <EntitySet Name="tbl_Cashflow" EntityType="Entities.tbl_Cashflow" />
+          <AssociationSet Name="FCashflowDebtorCreditorID1" Association="Entities.FCashflowDebtorCreditorID1">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPayerID" Association="Entities.FCashflowPayerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRecipientID" Association="Entities.FCashflowRecipientID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowContractID" Association="Entities.FCashflowContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInvoiceID" Association="Entities.FCashflowInvoiceID">
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPeriodID" Association="Entities.FCashflowPeriodID">
+            <End Role="tbl_Period" EntitySet="tbl_Period" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <EntitySet Name="tbl_AdminUnit" EntityType="Entities.tbl_AdminUnit" />
+          <EntitySet Name="tbl_CashflowRight" EntityType="Entities.tbl_CashflowRight" />
+          <AssociationSet Name="FAdminUnitGroupParentID" Association="Entities.FAdminUnitGroupParentID">
+            <End Role="tbl_AdminUnit" EntitySet="tbl_AdminUnit" />
+            <End Role="tbl_AdminUnit1" EntitySet="tbl_AdminUnit" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRightAdminUnitID" Association="Entities.FCashflowRightAdminUnitID">
+            <End Role="tbl_AdminUnit" EntitySet="tbl_AdminUnit" />
+            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRightRecordID" Association="Entities.FCashflowRightRecordID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="tbl_Cashflow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="CashAccountID" Type="Guid" />
+          <Property Name="TypeID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="RecipientID" Type="Guid" />
+          <Property Name="PayerID" Type="Guid" />
+          <Property Name="ContactID" Type="Guid" />
+          <Property Name="OpportunityID" Type="Guid" />
+          <Property Name="ContractID" Type="Guid" />
+          <Property Name="InvoiceID" Type="Guid" />
+          <Property Name="CampaignID" Type="Guid" />
+          <Property Name="StatusID" Type="Guid" />
+          <Property Name="PeriodID" Type="Guid" />
+          <Property Name="CurrencyID" Type="Guid" />
+          <Property Name="CategoryID" Type="Guid" />
+          <Property Name="EstimatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ActualDate" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyRate" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="BasicAmount" Type="Decimal" Precision="15" Scale="0" />
+          <Property Name="LinkID" Type="Guid" />
+          <Property Name="OwnerID" Type="Guid" />
+          <Property Name="ClauseID" Type="Guid" />
+          <Property Name="UseAsCashflow" Type="Int32" />
+          <Property Name="UseAsPandL" Type="Int32" />
+          <Property Name="AutocalcAmount" Type="Int32" Nullable="false" />
+          <Property Name="CFNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ExpenseTypeID" Type="Guid" />
+          <Property Name="ProjectID" Type="Guid" />
+          <Property Name="IncidentID" Type="Guid" />
+          <Property Name="ServiceAgreementID" Type="Guid" />
+          <Property Name="DebtorCreditorID" Type="Guid" />
+          <Property Name="ExpactablePayDate" Type="DateTime" Precision="3" />
+          <Property Name="DocDate" Type="DateTime" Precision="3" />
+          <Property Name="ManagerID" Type="Guid" />
+          <Property Name="MailSent" Type="Int32" Nullable="false" />
+          <Property Name="Comments" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyID" Type="Guid" />
+          <NavigationProperty Name="tbl_Account" Relationship="Entities.FCashflowDebtorCreditorID1" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account1" Relationship="Entities.FCashflowPayerID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account2" Relationship="Entities.FCashflowRecipientID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Contract" Relationship="Entities.FCashflowContractID" FromRole="tbl_Cashflow" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Invoice" Relationship="Entities.FCashflowInvoiceID" FromRole="tbl_Cashflow" ToRole="tbl_Invoice" />
+          <NavigationProperty Name="tbl_Period" Relationship="Entities.FCashflowPeriodID" FromRole="tbl_Cashflow" ToRole="tbl_Period" />
+          <Property Name="Obj1cDocNumIn" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_CashflowRight" Relationship="Entities.FCashflowRightRecordID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowRight" />
+        </EntityType>
+        <Association Name="FCashflowDebtorCreditorID1">
+          <End Type="Entities.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="DebtorCreditorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPayerID">
+          <End Type="Entities.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRecipientID">
+          <End Type="Entities.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="RecipientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowContractID">
+          <End Type="Entities.tbl_Contract" Role="tbl_Contract" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInvoiceID">
+          <End Type="Entities.tbl_Invoice" Role="tbl_Invoice" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Invoice">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="InvoiceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPeriodID">
+          <End Type="Entities.tbl_Period" Role="tbl_Period" Multiplicity="0..1" />
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PeriodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_AdminUnit">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="GroupParentID" Type="Guid" />
+          <Property Name="IsGroup" Type="Int32" />
+          <Property Name="GroupPasswordChangePeriodType" Type="Int32" />
+          <Property Name="UserIsAdmin" Type="Int32" />
+          <Property Name="UserContactID" Type="Guid" />
+          <Property Name="UserPasswordNeverExpired" Type="Int32" />
+          <Property Name="UserPasswordChangedOn" Type="DateTime" Precision="3" />
+          <Property Name="UserIsEnabled" Type="Int32" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="UserIsSysAdmin" Type="Int32" />
+          <Property Name="SQLObjectName" Type="String" MaxLength="125" FixedLength="false" Unicode="true" />
+          <Property Name="IsDomainUnit" Type="Int32" />
+          <NavigationProperty Name="tbl_AdminUnit1" Relationship="Entities.FAdminUnitGroupParentID" FromRole="tbl_AdminUnit" ToRole="tbl_AdminUnit1" />
+          <NavigationProperty Name="tbl_AdminUnit2" Relationship="Entities.FAdminUnitGroupParentID" FromRole="tbl_AdminUnit1" ToRole="tbl_AdminUnit" />
+          <NavigationProperty Name="tbl_CashflowRight" Relationship="Entities.FCashflowRightAdminUnitID" FromRole="tbl_AdminUnit" ToRole="tbl_CashflowRight" />
+        </EntityType>
+        <EntityType Name="tbl_CashflowRight">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="RecordID" Type="Guid" />
+          <Property Name="AdminUnitID" Type="Guid" />
+          <Property Name="CanRead" Type="Int32" />
+          <Property Name="CanWrite" Type="Int32" />
+          <Property Name="CanDelete" Type="Int32" />
+          <Property Name="CanChangeAccess" Type="Int32" />
+          <NavigationProperty Name="tbl_AdminUnit" Relationship="Entities.FCashflowRightAdminUnitID" FromRole="tbl_CashflowRight" ToRole="tbl_AdminUnit" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="Entities.FCashflowRightRecordID" FromRole="tbl_CashflowRight" ToRole="tbl_Cashflow" />
+        </EntityType>
+        <Association Name="FAdminUnitGroupParentID">
+          <End Type="Entities.tbl_AdminUnit" Role="tbl_AdminUnit" Multiplicity="0..1" />
+          <End Type="Entities.tbl_AdminUnit" Role="tbl_AdminUnit1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminUnit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_AdminUnit1">
+              <PropertyRef Name="GroupParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRightAdminUnitID">
+          <End Type="Entities.tbl_AdminUnit" Role="tbl_AdminUnit" Multiplicity="0..1" />
+          <End Type="Entities.tbl_CashflowRight" Role="tbl_CashflowRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminUnit">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowRight">
+              <PropertyRef Name="AdminUnitID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRightRecordID">
+          <End Type="Entities.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="0..1" />
+          <End Type="Entities.tbl_CashflowRight" Role="tbl_CashflowRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowRight">
+              <PropertyRef Name="RecordID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EntitiesStoreContainer" CdmEntityContainer="TSXRM3Entities">
+          <EntitySetMapping Name="tbl_Account">
+            <EntityTypeMapping TypeName="Entities.tbl_Account">
+              <MappingFragment StoreEntitySet="tbl_Account">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="OfficialAccountName" ColumnName="OfficialAccountName" />
+                <ScalarProperty Name="PrimaryContactID" ColumnName="PrimaryContactID" />
+                <ScalarProperty Name="TerritoryID" ColumnName="TerritoryID" />
+                <ScalarProperty Name="AnnualRevenue" ColumnName="AnnualRevenue" />
+                <ScalarProperty Name="EmployeesNumber" ColumnName="EmployeesNumber" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="AddressTypeID" ColumnName="AddressTypeID" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="StateID" ColumnName="StateID" />
+                <ScalarProperty Name="ZIP" ColumnName="ZIP" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="FieldID" ColumnName="FieldID" />
+                <ScalarProperty Name="Communication1" ColumnName="Communication1" />
+                <ScalarProperty Name="Communication2" ColumnName="Communication2" />
+                <ScalarProperty Name="Communication3" ColumnName="Communication3" />
+                <ScalarProperty Name="Communication4" ColumnName="Communication4" />
+                <ScalarProperty Name="Communication5" ColumnName="Communication5" />
+                <ScalarProperty Name="Communication1TypeID" ColumnName="Communication1TypeID" />
+                <ScalarProperty Name="Communication2TypeID" ColumnName="Communication2TypeID" />
+                <ScalarProperty Name="Communication3TypeID" ColumnName="Communication3TypeID" />
+                <ScalarProperty Name="Communication4TypeID" ColumnName="Communication4TypeID" />
+                <ScalarProperty Name="Communication5TypeID" ColumnName="Communication5TypeID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="AccountTypeID" ColumnName="AccountTypeID" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="TaxRegistrationCode" ColumnName="TaxRegistrationCode" />
+                <ScalarProperty Name="SettledCredit" ColumnName="SettledCredit" />
+                <ScalarProperty Name="PostponementPayment" ColumnName="PostponementPayment" />
+                <ScalarProperty Name="IsForeign" ColumnName="IsForeign" />
+                <ScalarProperty Name="ActivityID2" ColumnName="ActivityID2" />
+                <ScalarProperty Name="ActivityID3" ColumnName="ActivityID3" />
+                <ScalarProperty Name="Object1C" ColumnName="Object1C" />
+                <ScalarProperty Name="Code1C" ColumnName="Code1C" />
+                <ScalarProperty Name="UID1C" ColumnName="UID1C" />
+                <ScalarProperty Name="UNNIsUnknown" ColumnName="UNNIsUnknown" />
+                <ScalarProperty Name="IsOurCompany" ColumnName="IsOurCompany" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Contract">
+            <EntityTypeMapping TypeName="Entities.tbl_Contract">
+              <MappingFragment StoreEntitySet="tbl_Contract">
+                <ScalarProperty Name="Code1C" ColumnName="Code1C" />
+                <ScalarProperty Name="Object1C" ColumnName="Object1C" />
+                <ScalarProperty Name="MailOnSigned" ColumnName="MailOnSigned" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ContractNumber" ColumnName="ContractNumber" />
+                <ScalarProperty Name="ContractTypeID" ColumnName="ContractTypeID" />
+                <ScalarProperty Name="ParentContractID" ColumnName="ParentContractID" />
+                <ScalarProperty Name="OpportunityID" ColumnName="OpportunityID" />
+                <ScalarProperty Name="ContractStatusID" ColumnName="ContractStatusID" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="BillInfoID" ColumnName="BillInfoID" />
+                <ScalarProperty Name="BillingFrequencyID" ColumnName="BillingFrequencyID" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="BasicAmount" ColumnName="BasicAmount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="WorkflowItemID" ColumnName="WorkflowItemID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ManagerOBUKID" ColumnName="ManagerOBUKID" />
+                <ScalarProperty Name="LogisticManagerID" ColumnName="LogisticManagerID" />
+                <ScalarProperty Name="AdvanceAmount" ColumnName="AdvanceAmount" />
+                <ScalarProperty Name="BasicAdvanceAmount" ColumnName="BasicAdvanceAmount" />
+                <ScalarProperty Name="SigneOwnDate" ColumnName="SigneOwnDate" />
+                <ScalarProperty Name="RejectionDate" ColumnName="RejectionDate" />
+                <ScalarProperty Name="SigneClienttDate" ColumnName="SigneClienttDate" />
+                <ScalarProperty Name="PlannedAdvanceDate" ColumnName="PlannedAdvanceDate" />
+                <ScalarProperty Name="PlannedFullPayDate" ColumnName="PlannedFullPayDate" />
+                <ScalarProperty Name="SupplyStartDate" ColumnName="SupplyStartDate" />
+                <ScalarProperty Name="PlannedSupplyFinishDate" ColumnName="PlannedSupplyFinishDate" />
+                <ScalarProperty Name="WorkStartDate" ColumnName="WorkStartDate" />
+                <ScalarProperty Name="PlannedWorkFinishDate" ColumnName="PlannedWorkFinishDate" />
+                <ScalarProperty Name="AdvancePayDate" ColumnName="AdvancePayDate" />
+                <ScalarProperty Name="PlannedProfit" ColumnName="PlannedProfit" />
+                <ScalarProperty Name="PayedAmount" ColumnName="PayedAmount" />
+                <ScalarProperty Name="FactSupplyFinishDate" ColumnName="FactSupplyFinishDate" />
+                <ScalarProperty Name="FactFullPayDate" ColumnName="FactFullPayDate" />
+                <ScalarProperty Name="ActClientSigneDate" ColumnName="ActClientSigneDate" />
+                <ScalarProperty Name="ActOurSigneDate" ColumnName="ActOurSigneDate" />
+                <ScalarProperty Name="WorkRating" ColumnName="WorkRating" />
+                <ScalarProperty Name="SupplyRating" ColumnName="SupplyRating" />
+                <ScalarProperty Name="FactProfit" ColumnName="FactProfit" />
+                <ScalarProperty Name="ClientSatisfaction" ColumnName="ClientSatisfaction" />
+                <ScalarProperty Name="ResultComments" ColumnName="ResultComments" />
+                <ScalarProperty Name="FactWorkFinishDate" ColumnName="FactWorkFinishDate" />
+                <ScalarProperty Name="AdvanceWithin" ColumnName="AdvanceWithin" />
+                <ScalarProperty Name="Closed" ColumnName="Closed" />
+                <ScalarProperty Name="ContractType1" ColumnName="ContractType1" />
+                <ScalarProperty Name="ContractType2" ColumnName="ContractType2" />
+                <ScalarProperty Name="ContractType3" ColumnName="ContractType3" />
+                <ScalarProperty Name="ContractType4" ColumnName="ContractType4" />
+                <ScalarProperty Name="ContractType5" ColumnName="ContractType5" />
+                <ScalarProperty Name="ContractType6" ColumnName="ContractType6" />
+                <ScalarProperty Name="ContractType7" ColumnName="ContractType7" />
+                <ScalarProperty Name="mailSent3" ColumnName="mailSent3" />
+                <ScalarProperty Name="ContractType8" ColumnName="ContractType8" />
+                <ScalarProperty Name="PayedAmountBasic" ColumnName="PayedAmountBasic" />
+                <ScalarProperty Name="isFrame" ColumnName="isFrame" />
+                <ScalarProperty Name="IsInvoice" ColumnName="IsInvoice" />
+                <ScalarProperty Name="ContractCreationDate" ColumnName="ContractCreationDate" />
+                <ScalarProperty Name="NumberTitle" ColumnName="NumberTitle" />
+                <ScalarProperty Name="AmountOfOfferings" ColumnName="AmountOfOfferings" />
+                <ScalarProperty Name="AmountOfServices" ColumnName="AmountOfServices" />
+                <ScalarProperty Name="AmountOfOfferingsBasic" ColumnName="AmountOfOfferingsBasic" />
+                <ScalarProperty Name="AmountOfServicesBasic" ColumnName="AmountOfServicesBasic" />
+                <ScalarProperty Name="ProfitPlannedBasic" ColumnName="ProfitPlannedBasic" />
+                <ScalarProperty Name="ProfitActualBasic" ColumnName="ProfitActualBasic" />
+                <ScalarProperty Name="MonthID" ColumnName="MonthID" />
+                <ScalarProperty Name="MailOnCreate" ColumnName="MailOnCreate" />
+                <ScalarProperty Name="TempCompanyFields" ColumnName="TempCompanyFields" />
+                <ScalarProperty Name="ContractCompanyID" ColumnName="ContractCompanyID" />
+                <ScalarProperty Name="WasTaskCreated" ColumnName="WasTaskCreated" />
+                <ScalarProperty Name="TermsOfObligations" ColumnName="TermsOfObligations" />
+                <ScalarProperty Name="Maturity" ColumnName="Maturity" />
+                <ScalarProperty Name="Prepayment" ColumnName="Prepayment" />
+                <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+                <ScalarProperty Name="MailOnProcess" ColumnName="MailOnProcess" />
+                <ScalarProperty Name="IsAutoCalculated" ColumnName="IsAutoCalculated" />
+                <ScalarProperty Name="ContractDirectionID" ColumnName="ContractDirectionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Invoice">
+            <EntityTypeMapping TypeName="Entities.tbl_Invoice">
+              <MappingFragment StoreEntitySet="tbl_Invoice">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="OpportunityID" ColumnName="OpportunityID" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="BasicAmount" ColumnName="BasicAmount" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="ChannelID" ColumnName="ChannelID" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PaymentAmount" ColumnName="PaymentAmount" />
+                <ScalarProperty Name="BillStatusID" ColumnName="BillStatusID" />
+                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
+                <ScalarProperty Name="WorkflowItemID" ColumnName="WorkflowItemID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="BasicPaymentAmount" ColumnName="BasicPaymentAmount" />
+                <ScalarProperty Name="ShipmentStateID" ColumnName="ShipmentStateID" />
+                <ScalarProperty Name="Date1C" ColumnName="Date1C" />
+                <ScalarProperty Name="Object1C" ColumnName="Object1C" />
+                <ScalarProperty Name="Code1C" ColumnName="Code1C" />
+                <ScalarProperty Name="UID1C" ColumnName="UID1C" />
+                <ScalarProperty Name="ExpectablePayDate" ColumnName="ExpectablePayDate" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="PlannedPayDate" ColumnName="PlannedPayDate" />
+                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
+                <ScalarProperty Name="InvoicePayType" ColumnName="InvoicePayType" />
+                <ScalarProperty Name="DelayDays" ColumnName="DelayDays" />
+                <ScalarProperty Name="Database1CIndex" ColumnName="Database1CIndex" />
+                <ScalarProperty Name="IsRIPE" ColumnName="IsRIPE" />
+                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+                <ScalarProperty Name="MailSent" ColumnName="MailSent" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="LogisticsID" ColumnName="LogisticsID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Period">
+            <EntityTypeMapping TypeName="Entities.tbl_Period">
+              <MappingFragment StoreEntitySet="tbl_Period">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Cashflow">
+            <EntityTypeMapping TypeName="Entities.tbl_Cashflow">
+              <MappingFragment StoreEntitySet="tbl_Cashflow">
+                <ScalarProperty Name="Obj1cDocNumIn" ColumnName="Obj1cDocNumIn" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="MailSent" ColumnName="MailSent" />
+                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
+                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+                <ScalarProperty Name="ExpactablePayDate" ColumnName="ExpactablePayDate" />
+                <ScalarProperty Name="DebtorCreditorID" ColumnName="DebtorCreditorID" />
+                <ScalarProperty Name="ServiceAgreementID" ColumnName="ServiceAgreementID" />
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ExpenseTypeID" ColumnName="ExpenseTypeID" />
+                <ScalarProperty Name="CFNumber" ColumnName="CFNumber" />
+                <ScalarProperty Name="AutocalcAmount" ColumnName="AutocalcAmount" />
+                <ScalarProperty Name="UseAsPandL" ColumnName="UseAsPandL" />
+                <ScalarProperty Name="UseAsCashflow" ColumnName="UseAsCashflow" />
+                <ScalarProperty Name="ClauseID" ColumnName="ClauseID" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="LinkID" ColumnName="LinkID" />
+                <ScalarProperty Name="BasicAmount" ColumnName="BasicAmount" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ActualDate" ColumnName="ActualDate" />
+                <ScalarProperty Name="EstimatedDate" ColumnName="EstimatedDate" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="PeriodID" ColumnName="PeriodID" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
+                <ScalarProperty Name="OpportunityID" ColumnName="OpportunityID" />
+                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
+                <ScalarProperty Name="PayerID" ColumnName="PayerID" />
+                <ScalarProperty Name="RecipientID" ColumnName="RecipientID" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="CashAccountID" ColumnName="CashAccountID" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_AdminUnit">
+            <EntityTypeMapping TypeName="Entities.tbl_AdminUnit">
+              <MappingFragment StoreEntitySet="tbl_AdminUnit">
+                <ScalarProperty Name="IsDomainUnit" ColumnName="IsDomainUnit" />
+                <ScalarProperty Name="SQLObjectName" ColumnName="SQLObjectName" />
+                <ScalarProperty Name="UserIsSysAdmin" ColumnName="UserIsSysAdmin" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="UserIsEnabled" ColumnName="UserIsEnabled" />
+                <ScalarProperty Name="UserPasswordChangedOn" ColumnName="UserPasswordChangedOn" />
+                <ScalarProperty Name="UserPasswordNeverExpired" ColumnName="UserPasswordNeverExpired" />
+                <ScalarProperty Name="UserContactID" ColumnName="UserContactID" />
+                <ScalarProperty Name="UserIsAdmin" ColumnName="UserIsAdmin" />
+                <ScalarProperty Name="GroupPasswordChangePeriodType" ColumnName="GroupPasswordChangePeriodType" />
+                <ScalarProperty Name="IsGroup" ColumnName="IsGroup" />
+                <ScalarProperty Name="GroupParentID" ColumnName="GroupParentID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_CashflowRight">
+            <EntityTypeMapping TypeName="Entities.tbl_CashflowRight">
+              <MappingFragment StoreEntitySet="tbl_CashflowRight">
+                <ScalarProperty Name="CanChangeAccess" ColumnName="CanChangeAccess" />
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="CanWrite" ColumnName="CanWrite" />
+                <ScalarProperty Name="CanRead" ColumnName="CanRead" />
+                <ScalarProperty Name="AdminUnitID" ColumnName="AdminUnitID" />
+                <ScalarProperty Name="RecordID" ColumnName="RecordID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

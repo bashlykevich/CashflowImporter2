@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B90FA978-FB4C-487A-BEC0-E71D6FFE50C8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StatementsImporterLib</RootNamespace>
+    <AssemblyName>StatementsImporterLib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ADO\tbl_Account.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_AdminUnit.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_Cashflow.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_CashflowRight.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_Contract.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_Invoice.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\tbl_Period.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\TsDatabase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TsDatabase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\TsDatabase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ADO\TsDatabase.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TsDatabase.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\Connector1C.cs" />
+    <Compile Include="DAO\BankStatement.cs" />
+    <Compile Include="DAO\Subconto.cs" />
+    <Compile Include="DAO\Transfer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Toolkit\Helper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="ADO\TsDatabase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>TsDatabase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="ADO\TsDatabase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TsDatabase.edmx</DependentUpon>
+      <LastGenOutput>TsDatabase.Context.cs</LastGenOutput>
+    </None>
+    <None Include="ADO\TsDatabase.edmx.diagram">
+      <DependentUpon>TsDatabase.edmx</DependentUpon>
+    </None>
+    <None Include="ADO\TsDatabase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>TsDatabase.edmx</DependentUpon>
+      <LastGenOutput>TsDatabase.cs</LastGenOutput>
+    </None>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
