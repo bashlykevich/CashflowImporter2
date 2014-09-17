@@ -74,10 +74,10 @@ namespace CashflowImporter2
                     dbf = def_dbf;
                     comp = def_comp;
                 }
-                string host = System.Configuration.ConfigurationManager.AppSettings["ts_host"];
-                string db = System.Configuration.ConfigurationManager.AppSettings["ts_db"];
-                string user = System.Configuration.ConfigurationManager.AppSettings["ts_user"];
-                string psw = System.Configuration.ConfigurationManager.AppSettings["ts_psw"];
+                string host = Properties.Settings.Default.ts_host;
+                string db = Properties.Settings.Default.ts_db;
+                string user = Properties.Settings.Default.ts_user;
+                string psw = Properties.Settings.Default.ts_psw;                
 
                 string connectionstring = "metadata=res://*/ADO.TsXrmDbModel.csdl|res://*/ADO.TsXrmDbModel.ssdl|res://*/ADO.TsXrmDbModel.msl;provider=System.Data.SqlClient;provider connection string='Data Source="
                         + host
@@ -94,8 +94,9 @@ namespace CashflowImporter2
                     Helper.Log(s);
                     return;
                 }
-                DateTime startDate = new DateTime(2014, 1, 1);                
-                DateTime finishDate = DateTime.Now;
+                DateTime startDate = Properties.Settings.Default.start_date;
+                DateTime finishDate = Properties.Settings.Default.finish_date;
+
                 Connector1C core = new Connector1C(dbf, comp);
 
                 core.RunExport(connectionstring, startDate, finishDate, comp);                

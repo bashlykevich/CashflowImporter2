@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="CashflowImporter2.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ts_host" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="ts_db" Type="System.String" Scope="User">
+      <Value Profile="(Default)">TSXRM3</Value>
+    </Setting>
+    <Setting Name="ts_user" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Башлыкевич Сергей</Value>
+    </Setting>
+    <Setting Name="ts_psw" Type="System.String" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="start_date" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2014-01-01</Value>
+    </Setting>
+    <Setting Name="finish_date" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2014-01-31</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
