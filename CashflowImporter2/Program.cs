@@ -26,34 +26,16 @@ namespace CashflowImporter2
             public static void Run(string[] args)
             {
                 // DEFAULT 
-                //string def_dbf = DateTime.Now.ToString("ddMMyy") + ".DBF";
                 string def_dbf = "bank.DBF";
-                const string def_server = "192.168.5.12";
-                const string def_db = "TSXRM3";
-                const string def_user = "Supervisor";
-                const string def_psw = "123";
                 const Company def_comp = Company.MS;
 
                 const string key_dbf = "/dbf";
-                const string key_server = "/server";
-                const string key_db = "/db";
-                const string key_user = "/user";
-                const string key_psw = "/psw";
-                //const string key_help = "/?";
                 const string key_def = "/default";
                 const string key_comp = "/comp";
 
                 string dbf = "";
-                string server = "";
-                string db = "";
-                string user = "";
-                string psw = "";
-
+                
                 dbf = def_dbf;
-                server = def_server;
-                db = def_db;
-                user = def_user;
-                psw = def_psw;
                 Company comp = def_comp;
 
                 bool DefaultParams = args.Length == 0 ? true : false;
@@ -70,18 +52,6 @@ namespace CashflowImporter2
                                 break;
                             case key_dbf:
                                 dbf = args[i + 1];
-                                break;
-                            case key_db:
-                                db = args[i + 1];
-                                break;
-                            case key_server:
-                                server = args[i + 1];
-                                break;
-                            case key_user:
-                                user = args[i + 1];
-                                break;
-                            case key_psw:
-                                psw = args[i + 1];
                                 break;
                             case key_comp:
                                 string s = args[i + 1];
@@ -102,15 +72,15 @@ namespace CashflowImporter2
                 if (DefaultParams)
                 {
                     dbf = def_dbf;
-                    server = def_server;
-                    db = def_db;
-                    user = def_user;
-                    psw = def_psw;
                     comp = def_comp;
                 }
+                string host = System.Configuration.ConfigurationManager.AppSettings["ts_host"];
+                string db = System.Configuration.ConfigurationManager.AppSettings["ts_db"];
+                string user = System.Configuration.ConfigurationManager.AppSettings["ts_user"];
+                string psw = System.Configuration.ConfigurationManager.AppSettings["ts_psw"];
 
                 string connectionstring = "metadata=res://*/ADO.TsXrmDbModel.csdl|res://*/ADO.TsXrmDbModel.ssdl|res://*/ADO.TsXrmDbModel.msl;provider=System.Data.SqlClient;provider connection string='Data Source="
-                        + server
+                        + host
                         + ";Initial Catalog="
                         + db
                         + ";Persist Security Info=True;User ID=\""
@@ -124,21 +94,11 @@ namespace CashflowImporter2
                     Helper.Log(s);
                     return;
                 }
-                DateTime startDate = new DateTime(2014, 1, 1);
-                //DateTime finishDate = new DateTime(2013, 12, 31);
+                DateTime startDate = new DateTime(2014, 1, 1);                
                 DateTime finishDate = DateTime.Now;
                 Connector1C core = new Connector1C(dbf, comp);
 
-                core.RunExport(connectionstring, startDate, finishDate, comp);
-
-                /*startDate = new DateTime(2014, 2, 14);
-                finishDate = DateTime.Now;
-                core.RunExport(connectionstring, startDate, finishDate, comp);
-                */
-
-                //core.ExportToServer(connectionstring);
-                //core.ExportToLocalList(connectionstring);
-                //core.ExportToLocalListV2(connectionstring);
+                core.RunExport(connectionstring, startDate, finishDate, comp);                
             }
         }
     
