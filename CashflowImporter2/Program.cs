@@ -1,5 +1,8 @@
-﻿using System;
+﻿using StatementsImporterLib.Controllers;
+using StatementsImporterLib.Toolkit;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +13,133 @@ namespace CashflowImporter2
     {
         static void Main(string[] args)
         {
+            string[] _args = new string[4];
+            _args[0] = "/dbf";
+            _args[1] = @"d:\dbf\test1\bank2.dbf";
+            _args[2] = "/comp";
+            _args[3] = "za";
+            Launcher.Run(args);
         }
     }
+        class Launcher
+        {
+            public static void Run(string[] args)
+            {
+                // DEFAULT 
+                //string def_dbf = DateTime.Now.ToString("ddMMyy") + ".DBF";
+                string def_dbf = "bank.DBF";
+                const string def_server = "192.168.5.12";
+                const string def_db = "TSXRM3";
+                const string def_user = "Supervisor";
+                const string def_psw = "123";
+                const Company def_comp = Company.MS;
+
+                const string key_dbf = "/dbf";
+                const string key_server = "/server";
+                const string key_db = "/db";
+                const string key_user = "/user";
+                const string key_psw = "/psw";
+                //const string key_help = "/?";
+                const string key_def = "/default";
+                const string key_comp = "/comp";
+
+                string dbf = "";
+                string server = "";
+                string db = "";
+                string user = "";
+                string psw = "";
+
+                dbf = def_dbf;
+                server = def_server;
+                db = def_db;
+                user = def_user;
+                psw = def_psw;
+                Company comp = def_comp;
+
+                bool DefaultParams = args.Length == 0 ? true : false;
+                try
+                {
+                    for (int i = 0; i < args.Length; i += 2)
+                    {
+                        if (DefaultParams)
+                            continue;
+                        switch (args[i])
+                        {
+                            case key_def:
+                                DefaultParams = true;
+                                break;
+                            case key_dbf:
+                                dbf = args[i + 1];
+                                break;
+                            case key_db:
+                                db = args[i + 1];
+                                break;
+                            case key_server:
+                                server = args[i + 1];
+                                break;
+                            case key_user:
+                                user = args[i + 1];
+                                break;
+                            case key_psw:
+                                psw = args[i + 1];
+                                break;
+                            case key_comp:
+                                string s = args[i + 1];
+                                comp = Helper.GetCompany(s);
+                                break;
+                            default:
+                                Helper.PrintInfo();
+                                return;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    Helper.PrintInfo();
+                    return;
+                }
+
+                if (DefaultParams)
+                {
+                    dbf = def_dbf;
+                    server = def_server;
+                    db = def_db;
+                    user = def_user;
+                    psw = def_psw;
+                    comp = def_comp;
+                }
+
+                string connectionstring = "metadata=res://*/ADO.TsXrmDbModel.csdl|res://*/ADO.TsXrmDbModel.ssdl|res://*/ADO.TsXrmDbModel.msl;provider=System.Data.SqlClient;provider connection string='Data Source="
+                        + server
+                        + ";Initial Catalog="
+                        + db
+                        + ";Persist Security Info=True;User ID=\""
+                        + user
+                        + "\";Password="
+                        + psw + "'";
+                if (!File.Exists(dbf))
+                {
+                    string s = "Файл не найден: " + dbf;
+                    Console.WriteLine(s);
+                    Helper.Log(s);
+                    return;
+                }
+                DateTime startDate = new DateTime(2014, 1, 1);
+                //DateTime finishDate = new DateTime(2013, 12, 31);
+                DateTime finishDate = DateTime.Now;
+                Connector1C core = new Connector1C(dbf, comp);
+
+                core.RunExport(connectionstring, startDate, finishDate, comp);
+
+                /*startDate = new DateTime(2014, 2, 14);
+                finishDate = DateTime.Now;
+                core.RunExport(connectionstring, startDate, finishDate, comp);
+                */
+
+                //core.ExportToServer(connectionstring);
+                //core.ExportToLocalList(connectionstring);
+                //core.ExportToLocalListV2(connectionstring);
+            }
+        }
+    
 }

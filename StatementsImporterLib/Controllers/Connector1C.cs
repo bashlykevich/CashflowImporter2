@@ -66,7 +66,7 @@ namespace StatementsImporterLib.Controllers
                         TransferRows.AddRange(ImportedTable.Select(cond));
 
                         string Currency = GetStatementCurrency(StatementStartRowIndex, StatementEndRowIndex);
-                        int ii = 1;
+                        
                         for (int j = 0; j < TransferRows.Count; j++)
                         {
                             DataRow transferBaseRow = TransferRows[j];
