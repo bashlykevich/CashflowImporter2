@@ -53,6 +53,24 @@ namespace StatementsImporterLib.Toolkit
             }
             return sb.ToString();
         }
+        public static string GenerateConnectionString(string host, string db, string user, string psw)
+        {
+                                    // metadata=res://*/ADO.TsDatabase.csdl|res://*/ADO.TsDatabase.ssdl|res://*/ADO.TsDatabase.msl;provider=System.Data.SqlClient;provider connection string='data source=
+            string connectionstring = "metadata=res://*/ADO.TsDatabase.csdl|res://*/ADO.TsDatabase.ssdl|res://*/ADO.TsDatabase.msl;provider=System.Data.SqlClient;provider connection string='Data Source="
+                        + host
+                        // ;initial catalog=
+                        + ";Initial Catalog="
+                        + db
+                        // ;persist security info=True;user id=
+                        + ";Persist Security Info=True;User ID=\""
+                        + user
+                        //   ;password=
+                        + "\";Password="
+                        + psw
+                        // ;MultipleActiveResultSets=True;App=EntityFramework'
+                        + ";MultipleActiveResultSets=True;App=EntityFramework'";
+            return connectionstring;
+        }
         public static void Log(string text)
         {
             string LogFile = "log.txt";
@@ -72,6 +90,8 @@ namespace StatementsImporterLib.Toolkit
                 case "za":
                     return Company.ZA;
                 case "ne":
+                    return Company.NE;
+                case "nl":
                     return Company.NE;
                 case "sp":
                     return Company.SP;

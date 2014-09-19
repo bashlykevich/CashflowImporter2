@@ -40,6 +40,7 @@ namespace StatementsImporterLib.ADO
     
         public virtual ICollection<tbl_AdminUnit> tbl_AdminUnit1 { get; set; }
         public virtual tbl_AdminUnit tbl_AdminUnit2 { get; set; }
+        public virtual tbl_Contact tbl_Contact { get; set; }
         public virtual ICollection<tbl_CashflowRight> tbl_CashflowRight { get; set; }
     }
 }

@@ -12,75 +12,89 @@ namespace StatementsImporterLib.ADO
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_Account
+    public partial class tbl_Contact
     {
-        public tbl_Account()
+        public tbl_Contact()
         {
+            this.tbl_Account = new HashSet<tbl_Account>();
+            this.tbl_Account1 = new HashSet<tbl_Account>();
+            this.tbl_AdminUnit = new HashSet<tbl_AdminUnit>();
             this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
             this.tbl_Cashflow1 = new HashSet<tbl_Cashflow>();
             this.tbl_Cashflow2 = new HashSet<tbl_Cashflow>();
-            this.tbl_Contact2 = new HashSet<tbl_Contact>();
+            this.tbl_Contact1 = new HashSet<tbl_Contact>();
+            this.tbl_Contact11 = new HashSet<tbl_Contact>();
             this.tbl_Invoice = new HashSet<tbl_Invoice>();
             this.tbl_Invoice1 = new HashSet<tbl_Invoice>();
+            this.tbl_Invoice2 = new HashSet<tbl_Invoice>();
             this.tbl_Contract = new HashSet<tbl_Contract>();
             this.tbl_Contract1 = new HashSet<tbl_Contract>();
+            this.tbl_Contract2 = new HashSet<tbl_Contract>();
+            this.tbl_Contract3 = new HashSet<tbl_Contract>();
         }
     
         public System.Guid ID { get; set; }
+        public Nullable<System.Guid> AccountID { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
         public string Name { get; set; }
+        public string TimeZone { get; set; }
         public Nullable<System.Guid> CreatedByID { get; set; }
         public Nullable<System.Guid> ModifiedByID { get; set; }
-        public string OfficialAccountName { get; set; }
-        public Nullable<System.Guid> PrimaryContactID { get; set; }
-        public Nullable<System.Guid> TerritoryID { get; set; }
-        public Nullable<int> AnnualRevenue { get; set; }
-        public Nullable<int> EmployeesNumber { get; set; }
+        public string Dear { get; set; }
+        public Nullable<System.Guid> SalutationID { get; set; }
+        public string GenderID { get; set; }
+        public Nullable<System.Guid> DepartmentID { get; set; }
+        public Nullable<System.Guid> JobID { get; set; }
+        public string JobTitle { get; set; }
         public Nullable<System.Guid> OwnerID { get; set; }
-        public Nullable<System.Guid> CampaignID { get; set; }
-        public Nullable<System.Guid> AddressTypeID { get; set; }
         public string Address { get; set; }
+        public Nullable<System.Guid> AddressTypeID { get; set; }
         public Nullable<System.Guid> CityID { get; set; }
         public Nullable<System.Guid> StateID { get; set; }
-        public string ZIP { get; set; }
         public Nullable<System.Guid> CountryID { get; set; }
-        public Nullable<System.Guid> ActivityID { get; set; }
-        public Nullable<System.Guid> FieldID { get; set; }
+        public Nullable<System.Guid> TerritoryID { get; set; }
+        public string ZIP { get; set; }
         public string Communication1 { get; set; }
         public string Communication2 { get; set; }
         public string Communication3 { get; set; }
         public string Communication4 { get; set; }
-        public string Communication5 { get; set; }
         public Nullable<System.Guid> Communication1TypeID { get; set; }
         public Nullable<System.Guid> Communication2TypeID { get; set; }
         public Nullable<System.Guid> Communication3TypeID { get; set; }
         public Nullable<System.Guid> Communication4TypeID { get; set; }
-        public Nullable<System.Guid> Communication5TypeID { get; set; }
+        public Nullable<System.Guid> DecisionRoleID { get; set; }
+        public Nullable<System.Guid> CampaignID { get; set; }
         public byte[] Description { get; set; }
-        public Nullable<System.Guid> AccountTypeID { get; set; }
-        public string Code { get; set; }
-        public string TaxRegistrationCode { get; set; }
-        public Nullable<decimal> SettledCredit { get; set; }
-        public Nullable<int> PostponementPayment { get; set; }
-        public Nullable<int> IsForeign { get; set; }
-        public Nullable<System.Guid> ActivityID2 { get; set; }
-        public Nullable<System.Guid> ActivityID3 { get; set; }
+        public Nullable<int> DoNotCall { get; set; }
+        public Nullable<int> EmailOptOut { get; set; }
+        public Nullable<System.Guid> ContactTypeID { get; set; }
+        public byte[] Photo { get; set; }
+        public Nullable<int> PTS2010 { get; set; }
+        public Nullable<int> PTS2010Seminar { get; set; }
         public string Object1C { get; set; }
         public string Code1C { get; set; }
-        public Nullable<System.Guid> UID1C { get; set; }
-        public Nullable<int> UNNIsUnknown { get; set; }
-        public Nullable<int> IsOurCompany { get; set; }
+        public Nullable<System.Guid> AssistantID { get; set; }
+        public Nullable<System.Guid> EmployeeStateID { get; set; }
+        public Nullable<int> InternalNumber { get; set; }
     
-        public virtual tbl_Contact tbl_Contact { get; set; }
-        public virtual tbl_Contact tbl_Contact1 { get; set; }
+        public virtual ICollection<tbl_Account> tbl_Account { get; set; }
+        public virtual ICollection<tbl_Account> tbl_Account1 { get; set; }
+        public virtual tbl_Account tbl_Account2 { get; set; }
+        public virtual ICollection<tbl_AdminUnit> tbl_AdminUnit { get; set; }
         public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
         public virtual ICollection<tbl_Cashflow> tbl_Cashflow1 { get; set; }
         public virtual ICollection<tbl_Cashflow> tbl_Cashflow2 { get; set; }
-        public virtual ICollection<tbl_Contact> tbl_Contact2 { get; set; }
+        public virtual ICollection<tbl_Contact> tbl_Contact1 { get; set; }
+        public virtual tbl_Contact tbl_Contact2 { get; set; }
+        public virtual ICollection<tbl_Contact> tbl_Contact11 { get; set; }
+        public virtual tbl_Contact tbl_Contact3 { get; set; }
         public virtual ICollection<tbl_Invoice> tbl_Invoice { get; set; }
         public virtual ICollection<tbl_Invoice> tbl_Invoice1 { get; set; }
+        public virtual ICollection<tbl_Invoice> tbl_Invoice2 { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract1 { get; set; }
+        public virtual ICollection<tbl_Contract> tbl_Contract2 { get; set; }
+        public virtual ICollection<tbl_Contract> tbl_Contract3 { get; set; }
     }
 }

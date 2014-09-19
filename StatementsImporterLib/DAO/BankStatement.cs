@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using StatementsImporterLib.ADO;
+﻿using StatementsImporterLib.ADO;
+using System.Collections.Generic;
+
 
 namespace StatementsImporterLib.DAO
 {

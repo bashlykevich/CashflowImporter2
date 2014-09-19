@@ -177,7 +177,7 @@ namespace StatementsImporterLib.Controllers
             list1C = list1C.OrderBy(x => x.Приход).ToList();
             return list1C;
         }
-        List<tbl_Cashflow> getTransfersFromTs(DateTime compareDate, string companyID, TSXRM3Entities db)
+        List<tbl_Cashflow> getTransfersFromTs(DateTime compareDate, string companyID, Entities db)
         {
             Guid ds_compID = new Guid(companyID);
             //Console.WriteLine(compareDate.ToShortDateString());
@@ -186,7 +186,7 @@ namespace StatementsImporterLib.Controllers
                 && x.CompanyID == ds_compID).OrderBy(x => x.Amount).ToList();
             return listTs;
         }
-        void Update1cDocNumIns(TSXRM3Entities db, List<Transfer> list1C, List<tbl_Cashflow> lts, DateTime compareDate)
+        void Update1cDocNumIns(Entities db, List<Transfer> list1C, List<tbl_Cashflow> lts, DateTime compareDate)
         {
             List<CashflowComparer> hashes = new List<CashflowComparer>();
             List<tbl_Cashflow> listTs = lts.Where(x => String.IsNullOrEmpty(x.Obj1cDocNumIn)).ToList();
@@ -234,7 +234,7 @@ namespace StatementsImporterLib.Controllers
         public void RunExport(string connectionString, DateTime startDate, DateTime endDate, Company company)
         {
             string companyID = getDs_CompanyID(company);
-            using (TSXRM3Entities db = new TSXRM3Entities())
+            using (Entities db = new Entities(connectionString))
             {
                 Helper.Log("Соединение с базой установлено.");
                 DateTime compareDate = startDate;
@@ -362,7 +362,7 @@ namespace StatementsImporterLib.Controllers
         public void ExportToServer(string connectionstring)
         {
 
-            using (TSXRM3Entities db = new TSXRM3Entities())
+            using (Entities db = new Entities(connectionstring))
             {
                 Helper.Log("Соединение с базой установлено.");
                 foreach (BankStatement statement in BankStatements)
@@ -378,7 +378,7 @@ namespace StatementsImporterLib.Controllers
         public void ExportToLocalList(string connectionstring)
         {
 
-            using (TSXRM3Entities db = new TSXRM3Entities())
+            using (Entities db = new Entities(connectionstring))
             {
                 Helper.Log("Соединение с базой установлено.");
                 foreach (BankStatement statement in BankStatements)
@@ -394,7 +394,7 @@ namespace StatementsImporterLib.Controllers
         public void ExportToLocalListV2(string connectionstring)
         {
 
-            using (TSXRM3Entities db = new TSXRM3Entities())
+            using (Entities db = new Entities(connectionstring))
             {
                 Helper.Log("Соединение с базой установлено.");
                 foreach (BankStatement statement in BankStatements)
@@ -649,12 +649,12 @@ namespace StatementsImporterLib.Controllers
 
         #region private methods
 
-        private void CommitTransferToLocalList(TSXRM3Entities db, Transfer t, BankStatement statement)
+        private void CommitTransferToLocalList(Entities db, Transfer t, BankStatement statement)
         {
             tbl_Cashflow c = CreateCashflow(db, t, statement.ДатаДок);
             statement.Cashflows.Add(c);
         }
-        public tbl_Cashflow CreateCashflow(TSXRM3Entities db, Transfer t, string ДатаДок)
+        public tbl_Cashflow CreateCashflow(Entities db, Transfer t, string ДатаДок)
         {
             tbl_Cashflow c = new tbl_Cashflow();
             
@@ -820,7 +820,7 @@ namespace StatementsImporterLib.Controllers
             return c;
         }
 
-        public tbl_Cashflow CreateCashflow(TSXRM3Entities db, Transfer t, DateTime docDate)
+        public tbl_Cashflow CreateCashflow(Entities db, Transfer t, DateTime docDate)
         {
             tbl_Cashflow c = new tbl_Cashflow();
 
@@ -985,7 +985,7 @@ namespace StatementsImporterLib.Controllers
 
             return c;
         }
-        private void CommitTransferToDatabase(TSXRM3Entities db, Transfer t, string docDate)
+        private void CommitTransferToDatabase(Entities db, Transfer t, string docDate)
         {
             tbl_Cashflow c = CreateCashflow(db, t, docDate);
             db.tbl_Cashflow.Add(c);
@@ -1016,7 +1016,7 @@ namespace StatementsImporterLib.Controllers
             return res;
         }
 
-        private Guid? GetAccountID(TSXRM3Entities db, Transfer t)
+        private Guid? GetAccountID(Entities db, Transfer t)
         {
             Guid? AccountID = null;
             Subconto Account = GetSubconto(t, SubcontoType.Контрагент);
@@ -1028,7 +1028,7 @@ namespace StatementsImporterLib.Controllers
             return AccountID;
         }
 
-        private Guid? GetAccountID(TSXRM3Entities db, string AccountUNN)
+        private Guid? GetAccountID(Entities db, string AccountUNN)
         {
             Guid? AccountID = null;
             tbl_Account a = db.tbl_Account.FirstOrDefault(x => x.Code == AccountUNN);
@@ -1037,7 +1037,7 @@ namespace StatementsImporterLib.Controllers
             return AccountID;
         }
 
-        private Guid? GetAccountIDFromContract(TSXRM3Entities db, Guid? ContractID)
+        private Guid? GetAccountIDFromContract(Entities db, Guid? ContractID)
         {
             Guid? id = null;
             id = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID).CustomerID;
@@ -1061,7 +1061,7 @@ namespace StatementsImporterLib.Controllers
                 return Constants.CashflowTypeExpenseID;
         }
 
-        private Guid? GetContractID(TSXRM3Entities db, Transfer t)
+        private Guid? GetContractID(Entities db, Transfer t)
         {
             Guid? ContractID = null;
             Subconto Contract = GetSubconto(t, SubcontoType.Договор);
@@ -1073,7 +1073,7 @@ namespace StatementsImporterLib.Controllers
             return ContractID;
         }
         public int ExtraFound = 0;
-        private Guid? GetContractID(TSXRM3Entities db, string ContractNumber)
+        private Guid? GetContractID(Entities db, string ContractNumber)
         {
             char[] alph_en = { 'E', 'T', 'O', 'P', 'A', 'H', 'K', 'X', 'C', 'B', 'M' };
             char[] alph_ru = { 'Е', 'Т', 'О', 'Р', 'А', 'Н', 'К', 'Х', 'С', 'В', 'М' };
@@ -1137,14 +1137,14 @@ namespace StatementsImporterLib.Controllers
         {
             return new Guid(Constants.DefaultManagerID);
         }
-        private Guid? GetManagerIDFromAccount(TSXRM3Entities db, Guid? AccountID)
+        private Guid? GetManagerIDFromAccount(Entities db, Guid? AccountID)
         {
             Guid? id = null;
             id = db.tbl_Account.FirstOrDefault(x => x.ID == AccountID).OwnerID;
             return id;
         }
 
-        private Guid? GetManagerIDFromContract(TSXRM3Entities db, Guid? ContractID)
+        private Guid? GetManagerIDFromContract(Entities db, Guid? ContractID)
         {
             Guid? id = null;
             tbl_Contract contract = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID);
@@ -1170,13 +1170,13 @@ namespace StatementsImporterLib.Controllers
 
         }
 
-        private string GetNextNumber(TSXRM3Entities db)
+        private string GetNextNumber(Entities db)
         {
             string num = "1С" + (db.tbl_Cashflow.Count() + 1).ToString();
             return num;
         }
 
-        private Guid? GetOpportunityIDFromContract(TSXRM3Entities db, Guid? ContractID)
+        private Guid? GetOpportunityIDFromContract(Entities db, Guid? ContractID)
         {
             Guid? id = null;
             id = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID).OpportunityID;
@@ -1193,7 +1193,7 @@ namespace StatementsImporterLib.Controllers
             return new Guid("251FB9AC-C17E-4DF7-A0CB-D591FDB97462");
         }
 
-        private Guid? GetPeriodID(TSXRM3Entities db, DateTime date)
+        private Guid? GetPeriodID(Entities db, DateTime date)
         {
             tbl_Period p = db.tbl_Period.FirstOrDefault(x => x.StartDate <= date && date <= x.DueDate);
             if (p == null)
@@ -1215,7 +1215,7 @@ namespace StatementsImporterLib.Controllers
         }
         public static string getHash(tbl_Cashflow c)
         {
-            string[] keys = { c.Amount.ToString(), c.PayerID.ToString(), c.RecipientID.ToString(), c.Obj1cDocNumIn };
+            string[] keys = { ((long)c.Amount).ToString(), c.PayerID.ToString(), c.RecipientID.ToString(), c.Obj1cDocNumIn };
             return Helper.CalculateMD5Hash(keys);
         }
         public string hash { get; set; }

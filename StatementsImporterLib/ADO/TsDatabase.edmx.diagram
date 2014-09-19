@@ -4,29 +4,46 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="61a4a03c46da44c683027c169d368718" Name="Diagram1" ZoomLevel="55">
-        <EntityTypeShape EntityType="Entities.tbl_Account" Width="1.5" PointX="0.75" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="Entities.tbl_Contract" Width="1.5" PointX="3" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Entities.tbl_Invoice" Width="1.5" PointX="5.25" PointY="6.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="Entities.tbl_Period" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="Entities.FContractContractCompanyID1" ManuallyRouted="false" />
-        <AssociationConnector Association="Entities.FContractCustomerID" ManuallyRouted="false" />
-        <AssociationConnector Association="Entities.FInvoiceCustomerID" ManuallyRouted="false" />
-        <AssociationConnector Association="Entities.FInvoiceSupplierID" ManuallyRouted="false" />
-        <AssociationConnector Association="Entities.FContractParentContractID" ManuallyRouted="false" />
-        <AssociationConnector Association="Entities.FInvoiceContractID" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="Entities.tbl_Cashflow" Width="1.5" PointX="8" PointY="5.5" />
-        <AssociationConnector Association="Entities.FCashflowDebtorCreditorID1" />
-        <AssociationConnector Association="Entities.FCashflowPayerID" />
-        <AssociationConnector Association="Entities.FCashflowRecipientID" />
-        <AssociationConnector Association="Entities.FCashflowContractID" />
-        <AssociationConnector Association="Entities.FCashflowInvoiceID" />
-        <AssociationConnector Association="Entities.FCashflowPeriodID" />
-        <EntityTypeShape EntityType="Entities.tbl_AdminUnit" Width="1.5" PointX="10.375" PointY="1.125" />
-        <EntityTypeShape EntityType="Entities.tbl_CashflowRight" Width="1.5" PointX="12.625" PointY="7.375" />
-        <AssociationConnector Association="Entities.FAdminUnitGroupParentID" />
-        <AssociationConnector Association="Entities.FCashflowRightAdminUnitID" />
-        <AssociationConnector Association="Entities.FCashflowRightRecordID" />
+      <Diagram DiagramId="4fd0bc6b3c524b1aaa31b5900990837c" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Account" Width="1.5" PointX="0.75" PointY="10.875" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_AdminUnit" Width="1.5" PointX="5.25" PointY="13.875" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Cashflow" Width="1.5" PointX="10.5" PointY="10.875" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_CashflowRight" Width="1.5" PointX="12.75" PointY="15.125" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Contact" Width="1.5" PointX="3" PointY="10.375" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Invoice" Width="1.5" PointX="8.25" PointY="11.125" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Period" Width="1.5" PointX="8.25" PointY="7.125" />
+        <AssociationConnector Association="TSXRM3Model.FAccountOwnerID" />
+        <AssociationConnector Association="TSXRM3Model.FAccountPrimaryContactID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowDebtorCreditorID1" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowPayerID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowRecipientID" />
+        <AssociationConnector Association="TSXRM3Model.FContactAccountID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceCustomerID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceSupplierID" />
+        <AssociationConnector Association="TSXRM3Model.FAdminUnitGroupParentID" />
+        <AssociationConnector Association="TSXRM3Model.FAdminUnitUserContactID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowRightAdminUnitID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowContactID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowInvoiceID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowManagerID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowOwnerID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowPeriodID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowRightRecordID" />
+        <AssociationConnector Association="TSXRM3Model.FContactAssistantID" />
+        <AssociationConnector Association="TSXRM3Model.FContactOwnerID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceContactID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceManagerID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceOwnerID" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_Contract" Width="1.5" PointX="15.25" PointY="6.75" />
+        <AssociationConnector Association="TSXRM3Model.FContractContractCompanyID1" />
+        <AssociationConnector Association="TSXRM3Model.FContractCustomerID" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowContractID" />
+        <AssociationConnector Association="TSXRM3Model.FContractContactID" />
+        <AssociationConnector Association="TSXRM3Model.FContractLogisticManagerID" />
+        <AssociationConnector Association="TSXRM3Model.FContractManagerOBUKID" />
+        <AssociationConnector Association="TSXRM3Model.FContractOwnerID" />
+        <AssociationConnector Association="TSXRM3Model.FContractParentContractID" />
+        <AssociationConnector Association="TSXRM3Model.FInvoiceContractID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
