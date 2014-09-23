@@ -328,12 +328,15 @@ namespace StatementsImporterLib.Controllers
         {
             string target = "x";
             int subLength = 4;
-            DateTime dt = (cc.obj1C != null) ? cc.obj1C.ActualDate.Value : cc.objTs.ActualDate.Value;
-            Console.Write(dt.ToShortDateString() + " ");
+            
             if (cc.obj1C == null || cc.objTs == null)
             {
+                DateTime dt = (cc.obj1C != null) ? cc.obj1C.ActualDate.Value : cc.objTs.ActualDate.Value;
+                Console.Write(dt.ToShortDateString() + " ");
+           
                 if (cc.obj1C != null)
-                {
+                { 
+                    
                     target = cc.obj1C.Subject;
                     Console.Write("{0,10} {1,5} {2,5} | ", cc.obj1C.Amount.GetValueOrDefault(),
                                             cc.obj1C.PayerID.GetValueOrDefault().ToString().Substring(0, subLength),
