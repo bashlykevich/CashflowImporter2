@@ -49,7 +49,7 @@ namespace StatementsImporterLib.Controllers
                     {
                         // ШАПКА
                         double BaseGUID = bs.GUID - 1;
-                        bs.Наименование = row["REKVIZIT"].ToString();
+                        bs.Наименование = row["REKVIZIT"].ToString();                        
 
                         Helper.Log(bs.Наименование);
 
@@ -240,7 +240,6 @@ namespace StatementsImporterLib.Controllers
                 DateTime compareDate = startDate;
                 do
                 {
-                    Console.WriteLine(compareDate.ToShortDateString());
                     //Из выписки 1С за ДАТУ-1 выбирается набор-платежей-1
                     List<Transfer> list1C = getTransfersFrom1c(compareDate);
                     //За эту же ДАТУ-1 выбирается набор-платежей-2                    
@@ -284,7 +283,7 @@ namespace StatementsImporterLib.Controllers
                     // актулизировать список 
                     foreach (CashflowComparer cc in hashes)
                     {
-                        PrintCompareResultInfo(cc);
+                        PrintCompareResultInfo(cc);                        
                         //Если хэш из набора-1с есть в наборе-ТС - всё норм, оставляем как есть                        
                         switch (cc.Action)
                         {
@@ -329,7 +328,8 @@ namespace StatementsImporterLib.Controllers
         {
             string target = "x";
             int subLength = 4;
-
+            DateTime dt = (cc.obj1C != null) ? cc.obj1C.ActualDate.Value : cc.objTs.ActualDate.Value;
+            Console.Write(dt.ToShortDateString() + " ");
             if (cc.obj1C == null || cc.objTs == null)
             {
                 if (cc.obj1C != null)
@@ -1222,7 +1222,7 @@ namespace StatementsImporterLib.Controllers
         public tbl_Cashflow obj1C { get; set; }
         public tbl_Cashflow objTs { get; set; }
 
-        public ImportAction Action
+        public ImportAction  Action
         {
             get
             {
