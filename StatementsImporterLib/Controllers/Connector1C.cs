@@ -102,29 +102,7 @@ namespace StatementsImporterLib.Controllers
                                 {
                                     t.Курс = GetTransferRate(IsIncome, StatementStartRowIndex, StatementEndRowIndex, TransferStartRowIndex, TransferEndRowIndex);
                                 }                                
-                                //if (bs.ДатаДок == "12.02.14")
-                                /*if (t.ВидДвижения.Contains("Возврат от пос"))
-                                {
-                                   Console.WriteLine(ii++.ToString() + " " 
-                                       + bs.ДатаДок
-                                       + " " + t.НомерДокВходящий);
-                                    Console.WriteLine(" {0}/{1}/{2}/{3}/{4}/{5}", t.ВидДвижения
-                                        ,t.Субконто1.Наименование
-                                        ,t.НазначениеПлатежа
-                                        , String.Format("{0:n0}", t.Приход).Replace(",", " ")
-                                        //, String.Format("{0:n0}", t.Расход).Replace(",", " ")
-                                        ,t.НомерДокВходящий);
-                                    //Console.WriteLine(" {0}/{1}", String.Format("{0:n0}", t.Приход).Replace(",", " ")
-                                      //  , String.Format("{0:n0}", t.Расход).Replace(",", " "));
-                                    //Console.WriteLine("Назначение Платежа: \t" + t.НазначениеПлатежа);
-                                    //Console.WriteLine("Вид Движения: \t" + t.ВидДвижения);
-                                    //Console.WriteLine("Субконто1: \t" + t.Субконто1.Наименование);
-                                    //Console.WriteLine("Субконто2: \t" + t.Субконто2.Наименование);
-                                    //Console.WriteLine("Субконто3: \t" + t.Субконто3.Наименование);
-                                    //Console.WriteLine("Приход: \t" + String.Format("{0:n0}", t.Приход).Replace(",", " "));
-                                    //Console.WriteLine("Расход: \t" + String.Format("{0:n0}", t.Расход).Replace(",", " "));
-                                    //Console.ReadKey();                                 
-                                }*/
+                              
                                 bs.Transfers.Add(t);
                             }
                             catch (Exception e)
@@ -1026,6 +1004,7 @@ namespace StatementsImporterLib.Controllers
             if (Account != null)
             {
                 string AccountUNN = Account.Код;
+                AccountUNN = AccountUNN.ToLower().Replace('o', '0').Replace('о', '0'); // заменяем русскую и латинскую букву О на НОЛЬ
                 AccountID = GetAccountID(db, AccountUNN);
             }
             return AccountID;
