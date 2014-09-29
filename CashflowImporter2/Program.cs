@@ -12,7 +12,7 @@ namespace CashflowImporter2
     class Program
     {
         static void Main(string[] args)
-        {
+        {                        
             Launcher.Run(args);
         }
     }

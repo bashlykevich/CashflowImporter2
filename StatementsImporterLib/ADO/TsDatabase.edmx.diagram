@@ -44,6 +44,8 @@
         <AssociationConnector Association="TSXRM3Model.FContractOwnerID" />
         <AssociationConnector Association="TSXRM3Model.FContractParentContractID" />
         <AssociationConnector Association="TSXRM3Model.FInvoiceContractID" />
+        <EntityTypeShape EntityType="TSXRM3Model.tbl_CashflowClause" Width="1.5" PointX="8.25" PointY="22.875" />
+        <AssociationConnector Association="TSXRM3Model.FCashflowClauseID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

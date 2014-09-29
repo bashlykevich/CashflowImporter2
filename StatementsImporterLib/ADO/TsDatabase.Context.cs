@@ -33,5 +33,6 @@ namespace StatementsImporterLib.ADO
         public virtual DbSet<tbl_Invoice> tbl_Invoice { get; set; }
         public virtual DbSet<tbl_Period> tbl_Period { get; set; }
         public virtual DbSet<tbl_Contract> tbl_Contract { get; set; }
+        public virtual DbSet<tbl_CashflowClause> tbl_CashflowClause { get; set; }
     }
 }

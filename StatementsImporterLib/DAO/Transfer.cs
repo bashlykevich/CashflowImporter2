@@ -1,4 +1,5 @@
 ﻿using StatementsImporterLib.Toolkit;
+using System;
 
 namespace StatementsImporterLib.DAO
 {
@@ -11,9 +12,9 @@ namespace StatementsImporterLib.DAO
             get { return company; }
             set { company = value; }
         }
-        private string движениеДенежныхСредств;
+        private CashflowClause движениеДенежныхСредств;
 
-        public string ВидДвижения
+        public CashflowClause ВидДвижения
         {
             get { return движениеДенежныхСредств; }
             set { движениеДенежныхСредств = value; }
@@ -93,6 +94,19 @@ namespace StatementsImporterLib.DAO
         {
             get;
             set;
+        }
+    }
+
+    public class CashflowClause
+    {
+        public string Код;
+        public string Наименование;
+        public string ВидДвижения;
+        public string РазрезДеятельности;
+
+        public void print()
+        {
+            Console.WriteLine("{0,7} {1,15}...{2,6}...{3,5}", this.Код, this.Наименование, this.ВидДвижения, this.РазрезДеятельности);
         }
     }
 }

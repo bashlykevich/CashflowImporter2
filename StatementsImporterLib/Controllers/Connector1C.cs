@@ -87,7 +87,9 @@ namespace StatementsImporterLib.Controllers
                                 t.Приход = GetTransferAttributeDouble("Приход", transferBaseGUID);
                                 t.Расход = GetTransferAttributeDouble("Расход", transferBaseGUID);
                                 t.Валюта = Currency;
-                                t.ВидДвижения = GetTransferAttributeName("ВидДвижения", transferBaseGUID);
+                                
+                                t.ВидДвижения = GetTransferCashflowAccount(transferBaseGUID);                                
+
                                 t.Company = company;
                                 t.НомерДокВходящий = GetTransferAttribute("НомерДокВходящий", transferBaseGUID);
                                 if (bs.Наименование.Contains('т') && bs.Наименование.Contains('д'))
@@ -598,6 +600,25 @@ namespace StatementsImporterLib.Controllers
             res = AttributeField[5].ToString();
             return res;
         }
+        private CashflowClause GetTransferCashflowAccount(double transferBaseGUID)
+        {
+            CashflowClause res = new CashflowClause();
+            string cashflowClauseAttributeName = "ВидДвижения";
+            
+            Double cashflowClauseCode = 0;
+            List<DataRow> rows = ImportedRows.Where(r => (double)r[0] > transferBaseGUID).ToList();
+            DataRow AttributeField = rows.FirstOrDefault(r => r[2].ToString() == cashflowClauseAttributeName);
+            if (AttributeField == null)
+                return null;
+            Double.TryParse(AttributeField[5].ToString(), out cashflowClauseCode);
+            
+            res.Код = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Код")[5].ToString();
+            res.Наименование = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Наименование")[5].ToString();
+            res.ВидДвижения = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "ВидДвижения")[5].ToString();
+            res.РазрезДеятельности = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "РазрезДеятельности")[5].ToString();
+           
+            return res;
+        }
         private string GetTransferAttributeName(string AttributeName, double transferBaseGUID)
         {
             string res = "";
@@ -817,7 +838,7 @@ namespace StatementsImporterLib.Controllers
             c.CFNumber = GetNextNumber(db);
 
             // 02 НАЗНАЧЕНИЕ
-            c.Subject = t.ВидДвижения + ": " + t.НазначениеПлатежа;
+            c.Subject = t.ВидДвижения.Наименование + ": " + t.НазначениеПлатежа;
 
             // 03 ОТ            
             c.DocDate = docDate;
@@ -831,6 +852,8 @@ namespace StatementsImporterLib.Controllers
             c.TypeID = GetCashflowTypeID(cashflowType);
 
             // 05 СТАТЬЯ NULL
+            c.ClauseID = GetCashflowClauseID(db, t.ВидДвижения);
+            
             // 06 КАТЕГОРИЯ NULL
             // 07 ОТВЕТСТВЕННЫЙ
             c.OwnerID = GetOwnerID();
@@ -1041,6 +1064,40 @@ namespace StatementsImporterLib.Controllers
                 return Constants.CashflowTypeIncomeID;
             else
                 return Constants.CashflowTypeExpenseID;
+        }
+        List<tbl_CashflowClause> clauses = new List<tbl_CashflowClause>();
+        private Guid? GetCashflowClauseID(Entities db, CashflowClause clause1c)
+        {
+            if (clauses.Count == 0)
+            {
+                clauses = (from x in db.tbl_CashflowClause select x).ToList();
+            }
+
+            if (clauses.Count(x => x.Code == clause1c.Код) == 0)
+            {
+                //add clause
+                tbl_CashflowClause clauseTs = new tbl_CashflowClause
+                {
+                    ID = Guid.NewGuid(),
+                    Name = clause1c.Наименование,
+                    Code = clause1c.Код,
+                    CreatedByID = new Guid(Constants.DefaultAdminID),
+                    CreatedOn = DateTime.Now,
+                    Description = clause1c.ВидДвижения + ": " + clause1c.РазрезДеятельности,
+                    ExpenseDevideType = null,
+                    ExpenseTypeID = null,
+                    GroupID = null,
+                    IsTZP = null,
+                    ModifiedByID = new Guid(Constants.DefaultAdminID),
+                    ModifiedOn = DateTime.Now,
+                    TypeID = null
+                };
+                db.tbl_CashflowClause.Add(clauseTs);
+                clauses.Add(clauseTs);
+
+                return clauseTs.ID;
+            }
+            return clauses.FirstOrDefault(x => x.Code == clause1c.Код).ID;
         }
 
         private Guid? GetContractID(Entities db, Transfer t)
@@ -1281,7 +1338,8 @@ namespace StatementsImporterLib.Controllers
         //public static string CashflowTypeExpenseID = "ct_Charge";
         //public static string CashflowTypeIncomeID = "ct_Income";
         public const string CurrencyByrID = "49744485-ACC1-4729-9BE6-C595E01DA2FF";
-        public const string DefaultManagerID = "04AC88F1-CB81-4179-AA70-156DEE3AA022"; //Довгалева
+        public const string DefaultManagerID = "E712815E-ABF7-41C5-B4F4-3A6462BF76AD"; //Сорокина
+        public const string DefaultAdminID = "4C6876A1-3A5F-4877-BB5C-92709B3896EE"; //Башлыкевич
 
         public const string CurrencyEurID = "D18AAED6-14F9-435C-9606-0E90CAE816F9";
         public const string CurrencyRurID = "CC997518-B672-4F0B-AD9B-0668F06AE404";

@@ -60,6 +60,9 @@
     <Compile Include="ADO\tbl_Cashflow.cs">
       <DependentUpon>TsDatabase.tt</DependentUpon>
     </Compile>
+    <Compile Include="ADO\tbl_CashflowClause.cs">
+      <DependentUpon>TsDatabase.tt</DependentUpon>
+    </Compile>
     <Compile Include="ADO\tbl_CashflowRight.cs">
       <DependentUpon>TsDatabase.tt</DependentUpon>
     </Compile>

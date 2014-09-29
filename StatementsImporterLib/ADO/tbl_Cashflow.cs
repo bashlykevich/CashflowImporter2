@@ -74,5 +74,6 @@ namespace StatementsImporterLib.ADO
         public virtual tbl_Period tbl_Period { get; set; }
         public virtual ICollection<tbl_CashflowRight> tbl_CashflowRight { get; set; }
         public virtual tbl_Contract tbl_Contract { get; set; }
+        public virtual tbl_CashflowClause tbl_CashflowClause { get; set; }
     }
 }
