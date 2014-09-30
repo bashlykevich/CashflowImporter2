@@ -852,7 +852,7 @@ namespace StatementsImporterLib.Controllers
             c.TypeID = GetCashflowTypeID(cashflowType);
 
             // 05 СТАТЬЯ NULL
-            c.ClauseID = GetCashflowClauseID(db, t.ВидДвижения);
+            c.ClauseID = GetCashflowClauseID(db, t.ВидДвижения, t.Company);
             
             // 06 КАТЕГОРИЯ NULL
             // 07 ОТВЕТСТВЕННЫЙ
@@ -1066,7 +1066,7 @@ namespace StatementsImporterLib.Controllers
                 return Constants.CashflowTypeExpenseID;
         }
         List<tbl_CashflowClause> clauses = new List<tbl_CashflowClause>();
-        private Guid? GetCashflowClauseID(Entities db, CashflowClause clause1c)
+        private Guid? GetCashflowClauseID(Entities db, CashflowClause clause1c, Company company)
         {
             if (clauses.Count == 0)
             {
@@ -1080,7 +1080,7 @@ namespace StatementsImporterLib.Controllers
                 {
                     ID = Guid.NewGuid(),
                     Name = clause1c.Наименование,
-                    Code = clause1c.Код,
+                    Code = company.ToString() + clause1c.Код,
                     CreatedByID = new Guid(Constants.DefaultAdminID),
                     CreatedOn = DateTime.Now,
                     Description = clause1c.ВидДвижения + ": " + clause1c.РазрезДеятельности,
