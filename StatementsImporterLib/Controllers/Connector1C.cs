@@ -1068,19 +1068,20 @@ namespace StatementsImporterLib.Controllers
         List<tbl_CashflowClause> clauses = new List<tbl_CashflowClause>();
         private Guid? GetCashflowClauseID(Entities db, CashflowClause clause1c, Company company)
         {
+            string clauseCode =  company.ToString() + clause1c.Код;
             if (clauses.Count == 0)
             {
                 clauses = (from x in db.tbl_CashflowClause select x).ToList();
             }
 
-            if (clauses.Count(x => x.Code == clause1c.Код) == 0)
+            if (clauses.Count(x => x.Code == clauseCode) == 0)
             {
                 //add clause
                 tbl_CashflowClause clauseTs = new tbl_CashflowClause
                 {
                     ID = Guid.NewGuid(),
                     Name = clause1c.Наименование,
-                    Code = company.ToString() + clause1c.Код,
+                    Code = clauseCode,
                     CreatedByID = new Guid(Constants.DefaultAdminID),
                     CreatedOn = DateTime.Now,
                     Description = clause1c.ВидДвижения + ": " + clause1c.РазрезДеятельности,
@@ -1097,7 +1098,7 @@ namespace StatementsImporterLib.Controllers
 
                 return clauseTs.ID;
             }
-            return clauses.FirstOrDefault(x => x.Code == clause1c.Код).ID;
+            return clauses.FirstOrDefault(x => x.Code == clauseCode).ID;
         }
 
         private Guid? GetContractID(Entities db, Transfer t)
