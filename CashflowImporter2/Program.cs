@@ -16,13 +16,8 @@ namespace CashflowImporter2
     {
         // source-bs 
         [Option('b', "source-bs",
-          HelpText = "Имя xml-файла с банковскими выписками 1С.")]
+          HelpText = "Имя xml-файла с данными 1С.")]
         public string SourceBsFile { get; set; }
-
-        // source-mc
-        [Option('m', "source-mc",
-          HelpText = "Имя xml-файла с ручными операциями 1С.")]
-        public string SourceMcFile { get; set; }
 
         // date-start
         [Option('s', "date-start", Required = true,
@@ -80,29 +75,19 @@ namespace CashflowImporter2
             var options = new Options();
             if (CommandLine.Parser.Default.ParseArguments(args, options))
             {
-                if (String.IsNullOrEmpty(options.SourceBsFile) && String.IsNullOrEmpty(options.SourceMcFile))
+                if (String.IsNullOrEmpty(options.SourceBsFile))
                 {
-                    Console.WriteLine("Должен быть указан хотя бы один файл для импорта.");
+                    Console.WriteLine("Должен быть указан файл для импорта.");
                     return;
                 }
-                //if( options.DateEnd == null)
-                //{
-                    options.DateEnd = DateTime.Now;
-                //}
+                options.DateEnd = DateTime.Now;                
 
                 Company companyToUpdate = Helper.GetCompany(options.Company);
                 string connectionString = Helper.GenerateConnectionString(options.TsHost, options.TsDatabase, options.TsUser, options.TsPsw);
 
-                Connector1Cv2 core = new Connector1Cv2(companyToUpdate);
+                Connector1Cv2 core = new Connector1Cv2(companyToUpdate);                
+                core.ImportBansStatements(options.SourceBsFile, connectionString, options.DateStart, options.DateEnd);
                 
-                if(!String.IsNullOrEmpty(options.SourceBsFile))
-                {
-                    core.ImportBansStatements(options.SourceBsFile, connectionString, options.DateStart, options.DateEnd);
-                }
-                if(!String.IsNullOrEmpty(options.SourceMcFile))
-                {
-                    core.ImportManualCashflows(options.SourceBsFile, connectionString, options.DateStart, options.DateEnd);
-                }
             }            
         }
     }
