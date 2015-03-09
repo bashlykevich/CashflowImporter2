@@ -1,4 +1,7 @@
-﻿using StatementsImporterLib.Controllers;
+﻿using CashflowImporter2;
+using CommandLine;
+using CommandLine.Text;
+using StatementsImporterLib.Controllers;
 using StatementsImporterLib.Toolkit;
 using System;
 using System.Collections.Generic;
@@ -9,61 +12,98 @@ using System.Threading.Tasks;
 
 namespace CashflowImporter2
 {
+    class Options
+    {
+        // source-bs 
+        [Option('b', "source-bs",
+          HelpText = "Имя xml-файла с банковскими выписками 1С.")]
+        public string SourceBsFile { get; set; }
+
+        // source-mc
+        [Option('m', "source-mc",
+          HelpText = "Имя xml-файла с ручными операциями 1С.")]
+        public string SourceMcFile { get; set; }
+
+        // date-start
+        [Option('s', "date-start", Required = true,
+          HelpText = "Начала импортируемого периода.")]
+        public DateTime DateStart { get; set; }
+
+        // date-end
+        [Option('e', "date-end", Required = true,
+          HelpText = "Конец импортируемого периода.")]
+        public DateTime DateEnd { get; set; }
+        
+        // ts-host
+        [Option('h', "host", Required = true,
+          HelpText = "Адрес сервера Террасофт.")]
+        public string TsHost { get; set; }
+
+        // ts-db
+        [Option('d', "db", Required = true,
+          HelpText = "Имя базы на сервере Террасофт.")]
+        public string TsDatabase { get; set; }
+
+        // ts-user
+        [Option('u', "user", Required = true,
+          HelpText = "Имя пользователя сервера Террасофт.")]
+        public string TsUser { get; set; }
+        
+        // ts-psw
+        [Option('p', "psw", Required = true,
+          HelpText = "Пароль пользователя сервера Террасофт.")]
+        public string TsPsw { get; set; }
+
+        // company
+        [Option('c', "company", Required = true,
+         HelpText = "Код компании, база которой загружается (ms, za, sp, ir, nl")]
+        public string Company { get; set; }
+
+        [Option('v', "verbose", DefaultValue = true,
+         HelpText = "Prints all messages to standard output.")]
+        public bool Verbose { get; set; }
+
+        [ParserState]
+        public IParserState LastParserState { get; set; }
+
+        [HelpOption]
+        public string GetUsage()
+        {
+            return HelpText.AutoBuild(this,
+              (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+        }
+    }
     class Program
     {
         static void Main(string[] args)
-        {                        
-            Launcher.Run(args);
+        {
+            var options = new Options();
+            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                if (String.IsNullOrEmpty(options.SourceBsFile) && String.IsNullOrEmpty(options.SourceMcFile))
+                {
+                    Console.WriteLine("Должен быть указан хотя бы один файл для импорта.");
+                    return;
+                }
+                //if( options.DateEnd == null)
+                //{
+                    options.DateEnd = DateTime.Now;
+                //}
+
+                Company companyToUpdate = Helper.GetCompany(options.Company);
+                string connectionString = Helper.GenerateConnectionString(options.TsHost, options.TsDatabase, options.TsUser, options.TsPsw);
+
+                Connector1Cv2 core = new Connector1Cv2(companyToUpdate);
+                
+                if(!String.IsNullOrEmpty(options.SourceBsFile))
+                {
+                    core.ImportBansStatements(options.SourceBsFile, connectionString, options.DateStart, options.DateEnd);
+                }
+                if(!String.IsNullOrEmpty(options.SourceMcFile))
+                {
+                    core.ImportManualCashflows(options.SourceBsFile, connectionString, options.DateStart, options.DateEnd);
+                }
+            }            
         }
     }
-        class Launcher
-        {
-            public static void Run(string[] args)
-            {                
-                string sourceFile = "";
-                string companyCode = "";
-                bool finishDateIsNow = false;
-                try
-                {
-                    // первый параметр - имя файла
-                    sourceFile = args[0];
-                    // второй параметр - имя компании
-                    companyCode = args[1];
-                    // 3 параметр - опциональный ключ импорта по текущую дату
-                    if (args.Count() > 2)
-                        if (args[2] == "-to-date")
-                            finishDateIsNow = true;
-                }
-                catch (Exception)
-                {
-                    Helper.PrintInfo();
-                    return;
-                }
-                if (!File.Exists(sourceFile))
-                {
-                    string s = "Файл не найден: " + sourceFile;
-                    Console.WriteLine(s);
-                    Helper.Log(s);
-                    return;
-                }
-                Company company = Helper.GetCompany(companyCode);
-                
-                string host = Properties.Settings.Default.ts_host;
-                string db = Properties.Settings.Default.ts_db;
-                string user = Properties.Settings.Default.ts_user;
-                string psw = Properties.Settings.Default.ts_psw;
-                string connectionString = Helper.GenerateConnectionString(host, db, user, psw);
-                               
-                DateTime startDate = Properties.Settings.Default.start_date;
-                DateTime finishDate = DateTime.Now;
-                if (!finishDateIsNow)
-                {
-                    finishDate = Properties.Settings.Default.finish_date;
-                }
-                Connector1C core = new Connector1C(sourceFile, company);
-
-                core.RunExport(connectionString, startDate, finishDate, company);                
-            }
-        }
-    
 }

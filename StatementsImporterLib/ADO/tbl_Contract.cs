@@ -16,9 +16,9 @@ namespace StatementsImporterLib.ADO
     {
         public tbl_Contract()
         {
-            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
             this.tbl_Contract1 = new HashSet<tbl_Contract>();
             this.tbl_Invoice = new HashSet<tbl_Invoice>();
+            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
         }
     
         public System.Guid ID { get; set; }
@@ -111,10 +111,14 @@ namespace StatementsImporterLib.ADO
         public Nullable<int> MailOnSigned { get; set; }
         public string Object1C { get; set; }
         public string Code1C { get; set; }
+        public Nullable<int> ContractType9 { get; set; }
+        public Nullable<int> ContractType10 { get; set; }
+        public Nullable<int> ContractType11 { get; set; }
+        public Nullable<int> ContractType12 { get; set; }
+        public Nullable<int> ContractType13 { get; set; }
     
         public virtual tbl_Account tbl_Account { get; set; }
         public virtual tbl_Account tbl_Account1 { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
         public virtual tbl_Contact tbl_Contact { get; set; }
         public virtual tbl_Contact tbl_Contact1 { get; set; }
         public virtual tbl_Contact tbl_Contact2 { get; set; }
@@ -122,5 +126,6 @@ namespace StatementsImporterLib.ADO
         public virtual ICollection<tbl_Contract> tbl_Contract1 { get; set; }
         public virtual tbl_Contract tbl_Contract2 { get; set; }
         public virtual ICollection<tbl_Invoice> tbl_Invoice { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
     }
 }

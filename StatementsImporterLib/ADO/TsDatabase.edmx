@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="TSXRM3Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="TSXRM3Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_Account">
           <Key>
             <PropertyRef Name="ID" />
@@ -125,6 +125,7 @@
           <Property Name="Comments" Type="nvarchar" MaxLength="250" />
           <Property Name="CompanyID" Type="uniqueidentifier" />
           <Property Name="Obj1cDocNumIn" Type="nvarchar" MaxLength="250" />
+          <Property Name="UID1C" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="tbl_CashflowClause">
           <Key>
@@ -136,13 +137,25 @@
           <Property Name="ModifiedOn" Type="datetime" />
           <Property Name="ModifiedByID" Type="uniqueidentifier" />
           <Property Name="GroupID" Type="uniqueidentifier" />
-          <Property Name="Name" Type="nvarchar" MaxLength="250" />
-          <Property Name="Description" Type="nvarchar" MaxLength="250" />
-          <Property Name="Code" Type="nvarchar" MaxLength="250" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+          <Property Name="Code" Type="nvarchar" MaxLength="500" />
           <Property Name="TypeID" Type="uniqueidentifier" />
           <Property Name="ExpenseTypeID" Type="uniqueidentifier" />
           <Property Name="ExpenseDevideType" Type="uniqueidentifier" />
           <Property Name="IsTZP" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_CashflowInCashflow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="CreatedByID" Type="uniqueidentifier" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="ModifiedByID" Type="uniqueidentifier" />
+          <Property Name="ParentID" Type="uniqueidentifier" />
+          <Property Name="ChildID" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="tbl_CashflowRight">
           <Key>
@@ -214,7 +227,7 @@
           <Property Name="CreatedByID" Type="uniqueidentifier" />
           <Property Name="ModifiedOn" Type="datetime" />
           <Property Name="ModifiedByID" Type="uniqueidentifier" />
-          <Property Name="Title" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="ContractNumber" Type="nvarchar" MaxLength="250" />
           <Property Name="ContractTypeID" Type="uniqueidentifier" />
           <Property Name="ParentContractID" Type="uniqueidentifier" />
@@ -299,6 +312,11 @@
           <Property Name="MailOnSigned" Type="int" />
           <Property Name="Object1C" Type="nvarchar" MaxLength="250" />
           <Property Name="Code1C" Type="nvarchar" MaxLength="250" />
+          <Property Name="ContractType9" Type="int" />
+          <Property Name="ContractType10" Type="int" />
+          <Property Name="ContractType11" Type="int" />
+          <Property Name="ContractType12" Type="int" />
+          <Property Name="ContractType13" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Invoice">
           <Key>
@@ -458,6 +476,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FCashflowInCashflowChildID">
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="0..1" />
+          <End Role="tbl_CashflowInCashflow" Type="Self.tbl_CashflowInCashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ChildID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInCashflowParentID">
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="0..1" />
+          <End Role="tbl_CashflowInCashflow" Type="Self.tbl_CashflowInCashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FCashflowInvoiceID">
           <End Role="tbl_Invoice" Type="Self.tbl_Invoice" Multiplicity="0..1" />
           <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
@@ -467,6 +509,18 @@
             </Principal>
             <Dependent Role="tbl_Cashflow">
               <PropertyRef Name="InvoiceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowLinkID">
+          <End Role="tbl_CashflowInCashflow" Type="Self.tbl_CashflowInCashflow" Multiplicity="0..1" />
+          <End Role="tbl_Cashflow" Type="Self.tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="LinkID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -751,6 +805,7 @@
           <EntitySet Name="tbl_AdminUnit" EntityType="Self.tbl_AdminUnit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Cashflow" EntityType="Self.tbl_Cashflow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_CashflowClause" EntityType="Self.tbl_CashflowClause" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_CashflowInCashflow" EntityType="Self.tbl_CashflowInCashflow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_CashflowRight" EntityType="Self.tbl_CashflowRight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Contact" EntityType="Self.tbl_Contact" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Contract" EntityType="Self.tbl_Contract" Schema="dbo" store:Type="Tables" />
@@ -788,8 +843,20 @@
             <End Role="tbl_Account" EntitySet="tbl_Account" />
             <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
           </AssociationSet>
+          <AssociationSet Name="FCashflowInCashflowChildID" Association="Self.FCashflowInCashflowChildID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInCashflowParentID" Association="Self.FCashflowInCashflowParentID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
+          </AssociationSet>
           <AssociationSet Name="FCashflowInvoiceID" Association="Self.FCashflowInvoiceID">
             <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowLinkID" Association="Self.FCashflowLinkID">
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
             <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
           </AssociationSet>
           <AssociationSet Name="FCashflowManagerID" Association="Self.FCashflowManagerID">
@@ -892,7 +959,6 @@
         <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tbl_Account" EntityType="TSXRM3Model.tbl_Account" />
           <EntitySet Name="tbl_AdminUnit" EntityType="TSXRM3Model.tbl_AdminUnit" />
-          <EntitySet Name="tbl_Cashflow" EntityType="TSXRM3Model.tbl_Cashflow" />
           <EntitySet Name="tbl_CashflowRight" EntityType="TSXRM3Model.tbl_CashflowRight" />
           <EntitySet Name="tbl_Contact" EntityType="TSXRM3Model.tbl_Contact" />
           <EntitySet Name="tbl_Invoice" EntityType="TSXRM3Model.tbl_Invoice" />
@@ -904,18 +970,6 @@
           <AssociationSet Name="FAccountPrimaryContactID" Association="TSXRM3Model.FAccountPrimaryContactID">
             <End Role="tbl_Contact" EntitySet="tbl_Contact" />
             <End Role="tbl_Account" EntitySet="tbl_Account" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowDebtorCreditorID1" Association="TSXRM3Model.FCashflowDebtorCreditorID1">
-            <End Role="tbl_Account" EntitySet="tbl_Account" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowPayerID" Association="TSXRM3Model.FCashflowPayerID">
-            <End Role="tbl_Account" EntitySet="tbl_Account" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowRecipientID" Association="TSXRM3Model.FCashflowRecipientID">
-            <End Role="tbl_Account" EntitySet="tbl_Account" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
           </AssociationSet>
           <AssociationSet Name="FContactAccountID" Association="TSXRM3Model.FContactAccountID">
             <End Role="tbl_Account" EntitySet="tbl_Account" />
@@ -939,30 +993,6 @@
           </AssociationSet>
           <AssociationSet Name="FCashflowRightAdminUnitID" Association="TSXRM3Model.FCashflowRightAdminUnitID">
             <End Role="tbl_AdminUnit" EntitySet="tbl_AdminUnit" />
-            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowContactID" Association="TSXRM3Model.FCashflowContactID">
-            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowInvoiceID" Association="TSXRM3Model.FCashflowInvoiceID">
-            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowManagerID" Association="TSXRM3Model.FCashflowManagerID">
-            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowOwnerID" Association="TSXRM3Model.FCashflowOwnerID">
-            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowPeriodID" Association="TSXRM3Model.FCashflowPeriodID">
-            <End Role="tbl_Period" EntitySet="tbl_Period" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
-          <AssociationSet Name="FCashflowRightRecordID" Association="TSXRM3Model.FCashflowRightRecordID">
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
             <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
           </AssociationSet>
           <AssociationSet Name="FContactAssistantID" Association="TSXRM3Model.FContactAssistantID">
@@ -994,10 +1024,6 @@
             <End Role="tbl_Account" EntitySet="tbl_Account" />
             <End Role="tbl_Contract" EntitySet="tbl_Contract" />
           </AssociationSet>
-          <AssociationSet Name="FCashflowContractID" Association="TSXRM3Model.FCashflowContractID">
-            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
-            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
-          </AssociationSet>
           <AssociationSet Name="FContractContactID" Association="TSXRM3Model.FContractContactID">
             <End Role="tbl_Contact" EntitySet="tbl_Contact" />
             <End Role="tbl_Contract" EntitySet="tbl_Contract" />
@@ -1023,11 +1049,65 @@
             <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
           </AssociationSet>
           <EntitySet Name="tbl_CashflowClause" EntityType="TSXRM3Model.tbl_CashflowClause" />
+          <EntitySet Name="tbl_CashflowInCashflow" EntityType="TSXRM3Model.tbl_CashflowInCashflow" />
+          <EntitySet Name="tbl_Cashflow" EntityType="TSXRM3Model.tbl_Cashflow" />
+          <AssociationSet Name="FCashflowDebtorCreditorID1" Association="TSXRM3Model.FCashflowDebtorCreditorID1">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPayerID" Association="TSXRM3Model.FCashflowPayerID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRecipientID" Association="TSXRM3Model.FCashflowRecipientID">
+            <End Role="tbl_Account" EntitySet="tbl_Account" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
           <AssociationSet Name="FCashflowClauseID" Association="TSXRM3Model.FCashflowClauseID">
             <End Role="tbl_CashflowClause" EntitySet="tbl_CashflowClause" />
             <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
           </AssociationSet>
-        </EntityContainer>
+          <AssociationSet Name="FCashflowContactID" Association="TSXRM3Model.FCashflowContactID">
+            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowContractID" Association="TSXRM3Model.FCashflowContractID">
+            <End Role="tbl_Contract" EntitySet="tbl_Contract" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInCashflowChildID" Association="TSXRM3Model.FCashflowInCashflowChildID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInCashflowParentID" Association="TSXRM3Model.FCashflowInCashflowParentID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowInvoiceID" Association="TSXRM3Model.FCashflowInvoiceID">
+            <End Role="tbl_Invoice" EntitySet="tbl_Invoice" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowLinkID" Association="TSXRM3Model.FCashflowLinkID">
+            <End Role="tbl_CashflowInCashflow" EntitySet="tbl_CashflowInCashflow" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowManagerID" Association="TSXRM3Model.FCashflowManagerID">
+            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowOwnerID" Association="TSXRM3Model.FCashflowOwnerID">
+            <End Role="tbl_Contact" EntitySet="tbl_Contact" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowPeriodID" Association="TSXRM3Model.FCashflowPeriodID">
+            <End Role="tbl_Period" EntitySet="tbl_Period" />
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+          </AssociationSet>
+          <AssociationSet Name="FCashflowRightRecordID" Association="TSXRM3Model.FCashflowRightRecordID">
+            <End Role="tbl_Cashflow" EntitySet="tbl_Cashflow" />
+            <End Role="tbl_CashflowRight" EntitySet="tbl_CashflowRight" />
+          </AssociationSet>
+          </EntityContainer>
         <EntityType Name="tbl_Account">
           <Key>
             <PropertyRef Name="ID" />
@@ -1079,15 +1159,15 @@
           <Property Name="IsOurCompany" Type="Int32" />
           <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FAccountOwnerID" FromRole="tbl_Account" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FAccountPrimaryContactID" FromRole="tbl_Account" ToRole="tbl_Contact" />
-          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowDebtorCreditorID1" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
-          <NavigationProperty Name="tbl_Cashflow1" Relationship="TSXRM3Model.FCashflowPayerID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
-          <NavigationProperty Name="tbl_Cashflow2" Relationship="TSXRM3Model.FCashflowRecipientID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
           <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FContactAccountID" FromRole="tbl_Account" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Invoice" Relationship="TSXRM3Model.FInvoiceCustomerID" FromRole="tbl_Account" ToRole="tbl_Invoice" />
           <NavigationProperty Name="tbl_Invoice1" Relationship="TSXRM3Model.FInvoiceSupplierID" FromRole="tbl_Account" ToRole="tbl_Invoice" />
           <NavigationProperty Name="tbl_Contract" Relationship="TSXRM3Model.FContractContractCompanyID1" FromRole="tbl_Account" ToRole="tbl_Contract" />
           <NavigationProperty Name="tbl_Contract1" Relationship="TSXRM3Model.FContractCustomerID" FromRole="tbl_Account" ToRole="tbl_Contract" />
-        </EntityType>
+          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowDebtorCreditorID1" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow1" Relationship="TSXRM3Model.FCashflowPayerID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow2" Relationship="TSXRM3Model.FCashflowRecipientID" FromRole="tbl_Account" ToRole="tbl_Cashflow" />
+          </EntityType>
         <EntityType Name="tbl_AdminUnit">
           <Key>
             <PropertyRef Name="ID" />
@@ -1113,66 +1193,6 @@
           <NavigationProperty Name="tbl_AdminUnit2" Relationship="TSXRM3Model.FAdminUnitGroupParentID" FromRole="tbl_AdminUnit1" ToRole="tbl_AdminUnit" />
           <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FAdminUnitUserContactID" FromRole="tbl_AdminUnit" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_CashflowRight" Relationship="TSXRM3Model.FCashflowRightAdminUnitID" FromRole="tbl_AdminUnit" ToRole="tbl_CashflowRight" />
-        </EntityType>
-        <EntityType Name="tbl_Cashflow">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Guid" Nullable="false" />
-          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
-          <Property Name="CreatedByID" Type="Guid" />
-          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedByID" Type="Guid" />
-          <Property Name="CashAccountID" Type="Guid" />
-          <Property Name="TypeID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="RecipientID" Type="Guid" />
-          <Property Name="PayerID" Type="Guid" />
-          <Property Name="ContactID" Type="Guid" />
-          <Property Name="OpportunityID" Type="Guid" />
-          <Property Name="ContractID" Type="Guid" />
-          <Property Name="InvoiceID" Type="Guid" />
-          <Property Name="CampaignID" Type="Guid" />
-          <Property Name="StatusID" Type="Guid" />
-          <Property Name="PeriodID" Type="Guid" />
-          <Property Name="CurrencyID" Type="Guid" />
-          <Property Name="CategoryID" Type="Guid" />
-          <Property Name="EstimatedDate" Type="DateTime" Precision="3" />
-          <Property Name="ActualDate" Type="DateTime" Precision="3" />
-          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="CurrencyRate" Type="Decimal" Precision="15" Scale="4" />
-          <Property Name="Amount" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="BasicAmount" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="LinkID" Type="Guid" />
-          <Property Name="OwnerID" Type="Guid" />
-          <Property Name="ClauseID" Type="Guid" />
-          <Property Name="UseAsCashflow" Type="Int32" />
-          <Property Name="UseAsPandL" Type="Int32" />
-          <Property Name="AutocalcAmount" Type="Int32" Nullable="false" />
-          <Property Name="CFNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="ExpenseTypeID" Type="Guid" />
-          <Property Name="ProjectID" Type="Guid" />
-          <Property Name="IncidentID" Type="Guid" />
-          <Property Name="ServiceAgreementID" Type="Guid" />
-          <Property Name="DebtorCreditorID" Type="Guid" />
-          <Property Name="ExpactablePayDate" Type="DateTime" Precision="3" />
-          <Property Name="DocDate" Type="DateTime" Precision="3" />
-          <Property Name="ManagerID" Type="Guid" />
-          <Property Name="MailSent" Type="Int32" Nullable="false" />
-          <Property Name="Comments" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="CompanyID" Type="Guid" />
-          <Property Name="Obj1cDocNumIn" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="tbl_Account" Relationship="TSXRM3Model.FCashflowDebtorCreditorID1" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
-          <NavigationProperty Name="tbl_Account1" Relationship="TSXRM3Model.FCashflowPayerID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
-          <NavigationProperty Name="tbl_Account2" Relationship="TSXRM3Model.FCashflowRecipientID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
-          <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FCashflowContactID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
-          <NavigationProperty Name="tbl_Invoice" Relationship="TSXRM3Model.FCashflowInvoiceID" FromRole="tbl_Cashflow" ToRole="tbl_Invoice" />
-          <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FCashflowManagerID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
-          <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FCashflowOwnerID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
-          <NavigationProperty Name="tbl_Period" Relationship="TSXRM3Model.FCashflowPeriodID" FromRole="tbl_Cashflow" ToRole="tbl_Period" />
-          <NavigationProperty Name="tbl_CashflowRight" Relationship="TSXRM3Model.FCashflowRightRecordID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowRight" />
-          <NavigationProperty Name="tbl_Contract" Relationship="TSXRM3Model.FCashflowContractID" FromRole="tbl_Cashflow" ToRole="tbl_Contract" />
-          <NavigationProperty Name="tbl_CashflowClause" Relationship="TSXRM3Model.FCashflowClauseID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowClause" />
         </EntityType>
         <EntityType Name="tbl_CashflowRight">
           <Key>
@@ -1240,9 +1260,6 @@
           <NavigationProperty Name="tbl_Account1" Relationship="TSXRM3Model.FAccountPrimaryContactID" FromRole="tbl_Contact" ToRole="tbl_Account" />
           <NavigationProperty Name="tbl_Account2" Relationship="TSXRM3Model.FContactAccountID" FromRole="tbl_Contact" ToRole="tbl_Account" />
           <NavigationProperty Name="tbl_AdminUnit" Relationship="TSXRM3Model.FAdminUnitUserContactID" FromRole="tbl_Contact" ToRole="tbl_AdminUnit" />
-          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowContactID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
-          <NavigationProperty Name="tbl_Cashflow1" Relationship="TSXRM3Model.FCashflowManagerID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
-          <NavigationProperty Name="tbl_Cashflow2" Relationship="TSXRM3Model.FCashflowOwnerID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
           <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FContactAssistantID" FromRole="tbl_Contact" ToRole="tbl_Contact1" />
           <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FContactAssistantID" FromRole="tbl_Contact1" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact11" Relationship="TSXRM3Model.FContactOwnerID" FromRole="tbl_Contact" ToRole="tbl_Contact1" />
@@ -1254,6 +1271,9 @@
           <NavigationProperty Name="tbl_Contract1" Relationship="TSXRM3Model.FContractLogisticManagerID" FromRole="tbl_Contact" ToRole="tbl_Contract" />
           <NavigationProperty Name="tbl_Contract2" Relationship="TSXRM3Model.FContractManagerOBUKID" FromRole="tbl_Contact" ToRole="tbl_Contract" />
           <NavigationProperty Name="tbl_Contract3" Relationship="TSXRM3Model.FContractOwnerID" FromRole="tbl_Contact" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowContactID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow1" Relationship="TSXRM3Model.FCashflowManagerID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow2" Relationship="TSXRM3Model.FCashflowOwnerID" FromRole="tbl_Contact" ToRole="tbl_Cashflow" />
         </EntityType>
         <EntityType Name="tbl_Invoice">
           <Key>
@@ -1305,11 +1325,11 @@
           <Property Name="LogisticsID" Type="Guid" />
           <NavigationProperty Name="tbl_Account" Relationship="TSXRM3Model.FInvoiceCustomerID" FromRole="tbl_Invoice" ToRole="tbl_Account" />
           <NavigationProperty Name="tbl_Account1" Relationship="TSXRM3Model.FInvoiceSupplierID" FromRole="tbl_Invoice" ToRole="tbl_Account" />
-          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowInvoiceID" FromRole="tbl_Invoice" ToRole="tbl_Cashflow" />
           <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FInvoiceContactID" FromRole="tbl_Invoice" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FInvoiceManagerID" FromRole="tbl_Invoice" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FInvoiceOwnerID" FromRole="tbl_Invoice" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contract" Relationship="TSXRM3Model.FInvoiceContractID" FromRole="tbl_Invoice" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowInvoiceID" FromRole="tbl_Invoice" ToRole="tbl_Cashflow" />
         </EntityType>
         <EntityType Name="tbl_Period">
           <Key>
@@ -1346,42 +1366,6 @@
             </Principal>
             <Dependent Role="tbl_Account">
               <PropertyRef Name="PrimaryContactID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowDebtorCreditorID1">
-          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Account">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="DebtorCreditorID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowPayerID">
-          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Account">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="PayerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowRecipientID">
-          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Account">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="RecipientID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1457,78 +1441,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FCashflowContactID">
-          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Contact">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="ContactID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowInvoiceID">
-          <End Type="TSXRM3Model.tbl_Invoice" Role="tbl_Invoice" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Invoice">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="InvoiceID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowManagerID">
-          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Contact">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="ManagerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowOwnerID">
-          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Contact">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="OwnerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowPeriodID">
-          <End Type="TSXRM3Model.tbl_Period" Role="tbl_Period" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Period">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="PeriodID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowRightRecordID">
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_CashflowRight" Role="tbl_CashflowRight" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Cashflow">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_CashflowRight">
-              <PropertyRef Name="RecordID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FContactAssistantID">
           <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
           <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact1" Multiplicity="*" />
@@ -1598,7 +1510,7 @@
           <Property Name="CreatedByID" Type="Guid" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
           <Property Name="ModifiedByID" Type="Guid" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ContractNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="ContractTypeID" Type="Guid" />
           <Property Name="ParentContractID" Type="Guid" />
@@ -1685,7 +1597,6 @@
           <Property Name="Code1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="tbl_Account" Relationship="TSXRM3Model.FContractContractCompanyID1" FromRole="tbl_Contract" ToRole="tbl_Account" />
           <NavigationProperty Name="tbl_Account1" Relationship="TSXRM3Model.FContractCustomerID" FromRole="tbl_Contract" ToRole="tbl_Account" />
-          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowContractID" FromRole="tbl_Contract" ToRole="tbl_Cashflow" />
           <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FContractContactID" FromRole="tbl_Contract" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FContractLogisticManagerID" FromRole="tbl_Contract" ToRole="tbl_Contact" />
           <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FContractManagerOBUKID" FromRole="tbl_Contract" ToRole="tbl_Contact" />
@@ -1693,6 +1604,12 @@
           <NavigationProperty Name="tbl_Contract1" Relationship="TSXRM3Model.FContractParentContractID" FromRole="tbl_Contract" ToRole="tbl_Contract1" />
           <NavigationProperty Name="tbl_Contract2" Relationship="TSXRM3Model.FContractParentContractID" FromRole="tbl_Contract1" ToRole="tbl_Contract" />
           <NavigationProperty Name="tbl_Invoice" Relationship="TSXRM3Model.FInvoiceContractID" FromRole="tbl_Contract" ToRole="tbl_Invoice" />
+          <Property Name="ContractType9" Type="Int32" />
+          <Property Name="ContractType10" Type="Int32" />
+          <Property Name="ContractType11" Type="Int32" />
+          <Property Name="ContractType12" Type="Int32" />
+          <Property Name="ContractType13" Type="Int32" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowContractID" FromRole="tbl_Contract" ToRole="tbl_Cashflow" />
         </EntityType>
         <Association Name="FContractContractCompanyID1">
           <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
@@ -1715,18 +1632,6 @@
             </Principal>
             <Dependent Role="tbl_Contract">
               <PropertyRef Name="CustomerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FCashflowContractID">
-          <End Type="TSXRM3Model.tbl_Contract" Role="tbl_Contract" Multiplicity="0..1" />
-          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_Contract">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="tbl_Cashflow">
-              <PropertyRef Name="ContractID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1812,15 +1717,130 @@
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
           <Property Name="ModifiedByID" Type="Guid" />
           <Property Name="GroupID" Type="Guid" />
-          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Code" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="TypeID" Type="Guid" />
           <Property Name="ExpenseTypeID" Type="Guid" />
           <Property Name="ExpenseDevideType" Type="Guid" />
           <Property Name="IsTZP" Type="Int32" />
           <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowClauseID" FromRole="tbl_CashflowClause" ToRole="tbl_Cashflow" />
         </EntityType>
+        <EntityType Name="tbl_CashflowInCashflow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="ParentID" Type="Guid" />
+          <Property Name="ChildID" Type="Guid" />
+          <NavigationProperty Name="tbl_Cashflow" Relationship="TSXRM3Model.FCashflowInCashflowChildID" FromRole="tbl_CashflowInCashflow" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow1" Relationship="TSXRM3Model.FCashflowInCashflowParentID" FromRole="tbl_CashflowInCashflow" ToRole="tbl_Cashflow" />
+          <NavigationProperty Name="tbl_Cashflow2" Relationship="TSXRM3Model.FCashflowLinkID" FromRole="tbl_CashflowInCashflow" ToRole="tbl_Cashflow" />
+          </EntityType>
+        <EntityType Name="tbl_Cashflow">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="CreatedByID" Type="Guid" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedByID" Type="Guid" />
+          <Property Name="CashAccountID" Type="Guid" />
+          <Property Name="TypeID" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="RecipientID" Type="Guid" />
+          <Property Name="PayerID" Type="Guid" />
+          <Property Name="ContactID" Type="Guid" />
+          <Property Name="OpportunityID" Type="Guid" />
+          <Property Name="ContractID" Type="Guid" />
+          <Property Name="InvoiceID" Type="Guid" />
+          <Property Name="CampaignID" Type="Guid" />
+          <Property Name="StatusID" Type="Guid" />
+          <Property Name="PeriodID" Type="Guid" />
+          <Property Name="CurrencyID" Type="Guid" />
+          <Property Name="CategoryID" Type="Guid" />
+          <Property Name="EstimatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ActualDate" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CurrencyRate" Type="Decimal" Precision="15" Scale="4" />
+          <Property Name="Amount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BasicAmount" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="LinkID" Type="Guid" />
+          <Property Name="OwnerID" Type="Guid" />
+          <Property Name="ClauseID" Type="Guid" />
+          <Property Name="UseAsCashflow" Type="Int32" />
+          <Property Name="UseAsPandL" Type="Int32" />
+          <Property Name="AutocalcAmount" Type="Int32" Nullable="false" />
+          <Property Name="CFNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ExpenseTypeID" Type="Guid" />
+          <Property Name="ProjectID" Type="Guid" />
+          <Property Name="IncidentID" Type="Guid" />
+          <Property Name="ServiceAgreementID" Type="Guid" />
+          <Property Name="DebtorCreditorID" Type="Guid" />
+          <Property Name="ExpactablePayDate" Type="DateTime" Precision="3" />
+          <Property Name="DocDate" Type="DateTime" Precision="3" />
+          <Property Name="ManagerID" Type="Guid" />
+          <Property Name="MailSent" Type="Int32" Nullable="false" />
+          <Property Name="Comments" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyID" Type="Guid" />
+          <Property Name="Obj1cDocNumIn" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="UID1C" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="tbl_Account" Relationship="TSXRM3Model.FCashflowDebtorCreditorID1" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account1" Relationship="TSXRM3Model.FCashflowPayerID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_Account2" Relationship="TSXRM3Model.FCashflowRecipientID" FromRole="tbl_Cashflow" ToRole="tbl_Account" />
+          <NavigationProperty Name="tbl_CashflowClause" Relationship="TSXRM3Model.FCashflowClauseID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowClause" />
+          <NavigationProperty Name="tbl_Contact" Relationship="TSXRM3Model.FCashflowContactID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
+          <NavigationProperty Name="tbl_Contract" Relationship="TSXRM3Model.FCashflowContractID" FromRole="tbl_Cashflow" ToRole="tbl_Contract" />
+          <NavigationProperty Name="tbl_CashflowInCashflow" Relationship="TSXRM3Model.FCashflowInCashflowChildID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowInCashflow" />
+          <NavigationProperty Name="tbl_CashflowInCashflow1" Relationship="TSXRM3Model.FCashflowInCashflowParentID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowInCashflow" />
+          <NavigationProperty Name="tbl_Invoice" Relationship="TSXRM3Model.FCashflowInvoiceID" FromRole="tbl_Cashflow" ToRole="tbl_Invoice" />
+          <NavigationProperty Name="tbl_CashflowInCashflow2" Relationship="TSXRM3Model.FCashflowLinkID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowInCashflow" />
+          <NavigationProperty Name="tbl_Contact1" Relationship="TSXRM3Model.FCashflowManagerID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
+          <NavigationProperty Name="tbl_Contact2" Relationship="TSXRM3Model.FCashflowOwnerID" FromRole="tbl_Cashflow" ToRole="tbl_Contact" />
+          <NavigationProperty Name="tbl_Period" Relationship="TSXRM3Model.FCashflowPeriodID" FromRole="tbl_Cashflow" ToRole="tbl_Period" />
+          <NavigationProperty Name="tbl_CashflowRight" Relationship="TSXRM3Model.FCashflowRightRecordID" FromRole="tbl_Cashflow" ToRole="tbl_CashflowRight" />
+        </EntityType>
+        <Association Name="FCashflowDebtorCreditorID1">
+          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="DebtorCreditorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPayerID">
+          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PayerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRecipientID">
+          <End Type="TSXRM3Model.tbl_Account" Role="tbl_Account" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Account">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="RecipientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FCashflowClauseID">
           <End Type="TSXRM3Model.tbl_CashflowClause" Role="tbl_CashflowClause" Multiplicity="0..1" />
           <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
@@ -1833,7 +1853,127 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
+        <Association Name="FCashflowContactID">
+          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contact">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="ContactID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowContractID">
+          <End Type="TSXRM3Model.tbl_Contract" Role="tbl_Contract" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contract">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="ContractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInCashflowChildID">
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_CashflowInCashflow" Role="tbl_CashflowInCashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ChildID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInCashflowParentID">
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_CashflowInCashflow" Role="tbl_CashflowInCashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ParentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowInvoiceID">
+          <End Type="TSXRM3Model.tbl_Invoice" Role="tbl_Invoice" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Invoice">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="InvoiceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowLinkID">
+          <End Type="TSXRM3Model.tbl_CashflowInCashflow" Role="tbl_CashflowInCashflow" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_CashflowInCashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="LinkID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowManagerID">
+          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contact">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="ManagerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowOwnerID">
+          <End Type="TSXRM3Model.tbl_Contact" Role="tbl_Contact" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Contact">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="OwnerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowPeriodID">
+          <End Type="TSXRM3Model.tbl_Period" Role="tbl_Period" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Period">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_Cashflow">
+              <PropertyRef Name="PeriodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FCashflowRightRecordID">
+          <End Type="TSXRM3Model.tbl_Cashflow" Role="tbl_Cashflow" Multiplicity="0..1" />
+          <End Type="TSXRM3Model.tbl_CashflowRight" Role="tbl_CashflowRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Cashflow">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_CashflowRight">
+              <PropertyRef Name="RecordID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1909,56 +2049,6 @@
                 <ScalarProperty Name="IsGroup" ColumnName="IsGroup" />
                 <ScalarProperty Name="GroupParentID" ColumnName="GroupParentID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Cashflow">
-            <EntityTypeMapping TypeName="TSXRM3Model.tbl_Cashflow">
-              <MappingFragment StoreEntitySet="tbl_Cashflow">
-                <ScalarProperty Name="Obj1cDocNumIn" ColumnName="Obj1cDocNumIn" />
-                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
-                <ScalarProperty Name="Comments" ColumnName="Comments" />
-                <ScalarProperty Name="MailSent" ColumnName="MailSent" />
-                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
-                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
-                <ScalarProperty Name="ExpactablePayDate" ColumnName="ExpactablePayDate" />
-                <ScalarProperty Name="DebtorCreditorID" ColumnName="DebtorCreditorID" />
-                <ScalarProperty Name="ServiceAgreementID" ColumnName="ServiceAgreementID" />
-                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
-                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
-                <ScalarProperty Name="ExpenseTypeID" ColumnName="ExpenseTypeID" />
-                <ScalarProperty Name="CFNumber" ColumnName="CFNumber" />
-                <ScalarProperty Name="AutocalcAmount" ColumnName="AutocalcAmount" />
-                <ScalarProperty Name="UseAsPandL" ColumnName="UseAsPandL" />
-                <ScalarProperty Name="UseAsCashflow" ColumnName="UseAsCashflow" />
-                <ScalarProperty Name="ClauseID" ColumnName="ClauseID" />
-                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
-                <ScalarProperty Name="LinkID" ColumnName="LinkID" />
-                <ScalarProperty Name="BasicAmount" ColumnName="BasicAmount" />
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ActualDate" ColumnName="ActualDate" />
-                <ScalarProperty Name="EstimatedDate" ColumnName="EstimatedDate" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
-                <ScalarProperty Name="PeriodID" ColumnName="PeriodID" />
-                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
-                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
-                <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
-                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
-                <ScalarProperty Name="OpportunityID" ColumnName="OpportunityID" />
-                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
-                <ScalarProperty Name="PayerID" ColumnName="PayerID" />
-                <ScalarProperty Name="RecipientID" ColumnName="RecipientID" />
-                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
-                <ScalarProperty Name="CashAccountID" ColumnName="CashAccountID" />
-                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
-                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
-                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -2093,6 +2183,11 @@
           <EntitySetMapping Name="tbl_Contract">
             <EntityTypeMapping TypeName="TSXRM3Model.tbl_Contract">
               <MappingFragment StoreEntitySet="tbl_Contract">
+                <ScalarProperty Name="ContractType13" ColumnName="ContractType13" />
+                <ScalarProperty Name="ContractType12" ColumnName="ContractType12" />
+                <ScalarProperty Name="ContractType11" ColumnName="ContractType11" />
+                <ScalarProperty Name="ContractType10" ColumnName="ContractType10" />
+                <ScalarProperty Name="ContractType9" ColumnName="ContractType9" />
                 <ScalarProperty Name="Code1C" ColumnName="Code1C" />
                 <ScalarProperty Name="Object1C" ColumnName="Object1C" />
                 <ScalarProperty Name="MailOnSigned" ColumnName="MailOnSigned" />
@@ -2205,7 +2300,71 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <EntitySetMapping Name="tbl_CashflowInCashflow">
+            <EntityTypeMapping TypeName="TSXRM3Model.tbl_CashflowInCashflow">
+              <MappingFragment StoreEntitySet="tbl_CashflowInCashflow">
+                <ScalarProperty Name="ChildID" ColumnName="ChildID" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Cashflow">
+            <EntityTypeMapping TypeName="TSXRM3Model.tbl_Cashflow">
+              <MappingFragment StoreEntitySet="tbl_Cashflow">
+                <ScalarProperty Name="UID1C" ColumnName="UID1C" />
+                <ScalarProperty Name="Obj1cDocNumIn" ColumnName="Obj1cDocNumIn" />
+                <ScalarProperty Name="CompanyID" ColumnName="CompanyID" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="MailSent" ColumnName="MailSent" />
+                <ScalarProperty Name="ManagerID" ColumnName="ManagerID" />
+                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+                <ScalarProperty Name="ExpactablePayDate" ColumnName="ExpactablePayDate" />
+                <ScalarProperty Name="DebtorCreditorID" ColumnName="DebtorCreditorID" />
+                <ScalarProperty Name="ServiceAgreementID" ColumnName="ServiceAgreementID" />
+                <ScalarProperty Name="IncidentID" ColumnName="IncidentID" />
+                <ScalarProperty Name="ProjectID" ColumnName="ProjectID" />
+                <ScalarProperty Name="ExpenseTypeID" ColumnName="ExpenseTypeID" />
+                <ScalarProperty Name="CFNumber" ColumnName="CFNumber" />
+                <ScalarProperty Name="AutocalcAmount" ColumnName="AutocalcAmount" />
+                <ScalarProperty Name="UseAsPandL" ColumnName="UseAsPandL" />
+                <ScalarProperty Name="UseAsCashflow" ColumnName="UseAsCashflow" />
+                <ScalarProperty Name="ClauseID" ColumnName="ClauseID" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="LinkID" ColumnName="LinkID" />
+                <ScalarProperty Name="BasicAmount" ColumnName="BasicAmount" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ActualDate" ColumnName="ActualDate" />
+                <ScalarProperty Name="EstimatedDate" ColumnName="EstimatedDate" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="CurrencyID" ColumnName="CurrencyID" />
+                <ScalarProperty Name="PeriodID" ColumnName="PeriodID" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="CampaignID" ColumnName="CampaignID" />
+                <ScalarProperty Name="InvoiceID" ColumnName="InvoiceID" />
+                <ScalarProperty Name="ContractID" ColumnName="ContractID" />
+                <ScalarProperty Name="OpportunityID" ColumnName="OpportunityID" />
+                <ScalarProperty Name="ContactID" ColumnName="ContactID" />
+                <ScalarProperty Name="PayerID" ColumnName="PayerID" />
+                <ScalarProperty Name="RecipientID" ColumnName="RecipientID" />
+                <ScalarProperty Name="TypeID" ColumnName="TypeID" />
+                <ScalarProperty Name="CashAccountID" ColumnName="CashAccountID" />
+                <ScalarProperty Name="ModifiedByID" ColumnName="ModifiedByID" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="CreatedByID" ColumnName="CreatedByID" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

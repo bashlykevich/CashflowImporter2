@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StatementsImporterLib.ADO;
+using StatementsImporterLib.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -6,6 +8,7 @@ using System.Text;
 
 namespace StatementsImporterLib.Toolkit
 {
+    public enum CashflowType { Income, Expense };
     public struct ds_Company
     {
         public static string MS = "4F38D4CB-1929-47AA-A2D1-3C17C3CFA0A1";
@@ -17,8 +20,89 @@ namespace StatementsImporterLib.Toolkit
     // ds_Company
     
     public enum Company {MS,ZA,NE,SP,IR};
+
     public class Helper
     {
+        
+        public static string GetAccountNameCode(Transfer t)
+        {
+            string name = "";
+            Subconto Account = t.Субконто1;
+            if (Account != null)
+                name = Account.Наименование + " (" + Account.Код + ")";
+            return name;
+        }
+        
+        public static Guid? GetPeriodID(Entities db, DateTime date)
+        {
+            tbl_Period p = db.tbl_Period.FirstOrDefault(x => x.StartDate <= date && date <= x.DueDate);
+            if (p == null)
+                return null;
+            else
+                return p.ID;
+        }
+        public static string GetCashflowTypeID(CashflowType type)
+        {
+            if (type == CashflowType.Income)
+                return Constants.CashflowTypeIncomeID;
+            else
+                return Constants.CashflowTypeExpenseID;
+        }
+        static int cashflowCount = 0;
+        public static string GetNextNumber(Entities db)
+        {
+            string num = "1С" + (db.tbl_Cashflow.Count() + cashflowCount++ + 1).ToString();
+            return num;
+        }
+        public static Guid? GetOwnerID()
+        {
+            return new Guid(Constants.CashflowOwnerID);
+        }
+
+        public static Guid? GetSupervisorID()
+        {
+            return new Guid("251FB9AC-C17E-4DF7-A0CB-D591FDB97462");
+        }
+        public static DateTime ParseDate(string date)
+        {
+            DateTime dt = DateTime.Now;
+            DateTime.TryParse(date, out dt);
+            return dt;
+        }
+        public static string getDs_CompanyID(Company c)
+        {
+            string id = ds_Company.MS;
+            switch (c)
+            {
+                case Company.NE:
+                    id = ds_Company.NE;
+                    break;
+                case Company.SP:
+                    id = ds_Company.SP;
+                    break;
+                case Company.ZA:
+                    id = ds_Company.ZA;
+                    break;
+            }
+            return id;
+        }
+        public static string ParseContractNumber(string ContractName)
+        {
+            string Number = "";
+            int start = ContractName.IndexOf("№");
+            if (start < 0)
+                return "";
+            Number = ContractName.Substring(start + 1);
+            int end = Number.IndexOf(" ");
+            if (end < 0)
+                return "";
+            Number = Number.Substring(0, end + 1);
+            return Number;
+        }
+        public static string ParseContractCode(string ContractCode)
+        {
+            return ContractCode.Replace("№", "");
+        }
         public static void PrintInfo()
         {
             Console.WriteLine(" Без параметров  Запуск с параметрами по умолчанию (смотри ниже)");

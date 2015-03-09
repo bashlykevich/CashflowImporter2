@@ -19,9 +19,6 @@ namespace StatementsImporterLib.ADO
             this.tbl_Account = new HashSet<tbl_Account>();
             this.tbl_Account1 = new HashSet<tbl_Account>();
             this.tbl_AdminUnit = new HashSet<tbl_AdminUnit>();
-            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
-            this.tbl_Cashflow1 = new HashSet<tbl_Cashflow>();
-            this.tbl_Cashflow2 = new HashSet<tbl_Cashflow>();
             this.tbl_Contact1 = new HashSet<tbl_Contact>();
             this.tbl_Contact11 = new HashSet<tbl_Contact>();
             this.tbl_Invoice = new HashSet<tbl_Invoice>();
@@ -31,6 +28,9 @@ namespace StatementsImporterLib.ADO
             this.tbl_Contract1 = new HashSet<tbl_Contract>();
             this.tbl_Contract2 = new HashSet<tbl_Contract>();
             this.tbl_Contract3 = new HashSet<tbl_Contract>();
+            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
+            this.tbl_Cashflow1 = new HashSet<tbl_Cashflow>();
+            this.tbl_Cashflow2 = new HashSet<tbl_Cashflow>();
         }
     
         public System.Guid ID { get; set; }
@@ -82,9 +82,6 @@ namespace StatementsImporterLib.ADO
         public virtual ICollection<tbl_Account> tbl_Account1 { get; set; }
         public virtual tbl_Account tbl_Account2 { get; set; }
         public virtual ICollection<tbl_AdminUnit> tbl_AdminUnit { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow1 { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow2 { get; set; }
         public virtual ICollection<tbl_Contact> tbl_Contact1 { get; set; }
         public virtual tbl_Contact tbl_Contact2 { get; set; }
         public virtual ICollection<tbl_Contact> tbl_Contact11 { get; set; }
@@ -96,5 +93,8 @@ namespace StatementsImporterLib.ADO
         public virtual ICollection<tbl_Contract> tbl_Contract1 { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract2 { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract3 { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow1 { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow2 { get; set; }
     }
 }

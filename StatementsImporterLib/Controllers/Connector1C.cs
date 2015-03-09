@@ -4,13 +4,13 @@ using System.Data;
 using System.Data.Odbc;
 using System.Linq;
 using System.IO;
-using StatementsImporterLib.DAO;
 using StatementsImporterLib.ADO;
 using StatementsImporterLib.Toolkit;
 using System.Security.Cryptography;
 using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.ComponentModel;
+using System.Xml;
 
 namespace StatementsImporterLib.Controllers
 {
@@ -19,8 +19,16 @@ namespace StatementsImporterLib.Controllers
         private List<DataRow> ImportedRows = new List<DataRow>();
 
         #region public methods
-
-        public Connector1C(string filename, Company company)
+        private bool DEBUG;
+        private Company company;
+        public Connector1C(Company c, bool enableDebug = false)
+        {
+            string logFileName = DateTime.Now.ToString().Replace(":", "-");
+            importLogFile = new StreamWriter(logFileName + ".txt");
+            this.DEBUG = enableDebug;
+            this.company = c;
+        }
+        public void LoadFromDbf(string filename)
         {
             Helper.Log("Старт");
             OdbcConnection conn = new OdbcConnection();
@@ -49,7 +57,7 @@ namespace StatementsImporterLib.Controllers
                     {
                         // ШАПКА
                         double BaseGUID = bs.GUID - 1;
-                        bs.Наименование = row["REKVIZIT"].ToString();                        
+                        bs.Наименование = row["REKVIZIT"].ToString();
 
                         Helper.Log(bs.Наименование);
 
@@ -64,9 +72,10 @@ namespace StatementsImporterLib.Controllers
                                         + " AND REKVIZIT = 'ВидДвижения'"
                                         + " AND REKVTYPE = 'Справочник.ДвиженияДенежныхСредств'";
                         TransferRows.AddRange(ImportedTable.Select(cond));
+                        Console.WriteLine(bs.ДатаДок);
 
                         string Currency = GetStatementCurrency(StatementStartRowIndex, StatementEndRowIndex);
-                        
+
                         for (int j = 0; j < TransferRows.Count; j++)
                         {
                             DataRow transferBaseRow = TransferRows[j];
@@ -78,7 +87,7 @@ namespace StatementsImporterLib.Controllers
                             try
                             {
                                 Transfer t = new Transfer();
-                                
+
                                 t.КоррСчёт = ImportedRows[transferBaseGUID + 2][5].ToString();
                                 t.НазначениеПлатежа = ImportedRows[transferBaseGUID + 1][5].ToString();
                                 t.Субконто1 = GetSubconto(1, transferBaseGUID);
@@ -87,10 +96,10 @@ namespace StatementsImporterLib.Controllers
                                 t.Приход = GetTransferAttributeDouble("Приход", transferBaseGUID);
                                 t.Расход = GetTransferAttributeDouble("Расход", transferBaseGUID);
                                 t.Валюта = Currency;
-                                
-                                t.ВидДвижения = GetTransferCashflowAccount(transferBaseGUID);                                
 
-                                t.Company = company;
+                                t.ВидДвижения = GetTransferCashflowAccount(transferBaseGUID);
+
+                                t.Company = this.company;
                                 t.НомерДокВходящий = GetTransferAttribute("НомерДокВходящий", transferBaseGUID);
                                 if (bs.Наименование.Contains('т') && bs.Наименование.Contains('д'))
                                 {
@@ -103,8 +112,7 @@ namespace StatementsImporterLib.Controllers
                                 else
                                 {
                                     t.Курс = GetTransferRate(IsIncome, StatementStartRowIndex, StatementEndRowIndex, TransferStartRowIndex, TransferEndRowIndex);
-                                }                                
-                              
+                                }                               
                                 bs.Transfers.Add(t);
                             }
                             catch (Exception e)
@@ -122,7 +130,97 @@ namespace StatementsImporterLib.Controllers
                 }
                 conn.Close();
                 Helper.Log("Импорт из DBF завершен.");
+                if (this.DEBUG)
+                {
+                    Console.WriteLine("Found statements: {0}\n", this.statements.Count);
+                }
             }
+        }
+        public void LoadFromXml(string filename, string connectionString, DateTime startDate, DateTime endDate)
+        {
+            this.ParseXmlFile(filename);
+            this.UploadXmlDataToDatabase(connectionString, startDate, endDate);
+            
+        }
+        private void UploadXmlDataToDatabase(string connectionString, DateTime startDate, DateTime endDate)
+        {
+            string companyID = getDs_CompanyID(company);
+            using (Entities db = new Entities(connectionString))    // поднимаем подключение к БД
+            {
+                DateTime compareDate = startDate;
+                do
+                {
+                    UpdateCashflowForDate(compareDate, companyID, db); // для каждой даты осуществляем сравнение выгруженнных из 1С и существующих в ТС платежей
+                    compareDate = compareDate.AddDays(1);
+                } while (compareDate <= endDate);       //  проходим по всем датам из указанного в конфигурационном файле диапазона
+            }
+        }
+        public void ParseXmlFile(string filename)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filename);
+
+            XmlNode bankNode = xmlDoc.SelectSingleNode("Bank");
+            foreach(XmlNode statementNode in bankNode)
+            {
+                BankStatement bs = new BankStatement();
+                bs.ДатаДок = statementNode.Attributes["ДатаДок"].Value;
+                bs.НомерДок = statementNode.Attributes["НомерДок"].Value;
+                bs.Валюта = statementNode.Attributes["Валюта"].Value;
+                Console.WriteLine("{0} {1} {2}", bs.ДатаДок, bs.НомерДок,bs.Валюта);
+                List<Transfer> transfers = new List<Transfer>();
+                foreach(XmlNode transferNode in statementNode.ChildNodes)
+                {
+                    Transfer t = new Transfer();
+                    //t.КоррСчёт = ;
+                    t.НазначениеПлатежа = transferNode.Attributes["НазначениеПлатежа"].Value;
+                    t.Субконто1 = new Subconto
+                    {
+                        Код = transferNode.Attributes["КонтрагентИНН"].Value,
+                        Наименование = transferNode.Attributes["КонтрагентНаименование"].Value,
+                        ТипСубконто = SubcontoType.Контрагент
+                    };
+                    t.Субконто2 = new Subconto
+                    {
+                        Код = transferNode.Attributes["ДоговорКод"].Value,
+                        Наименование = transferNode.Attributes["ДоговорНаименование"].Value,
+                        ТипСубконто = SubcontoType.Договор
+                    };
+                    t.Субконто3 = new Subconto
+                    {
+                        Код = "",
+                        Наименование = "",
+                        ТипСубконто = SubcontoType.Неопределено
+                    };
+                    t.Приход = Double.Parse(transferNode.Attributes["Приход"].Value.Replace(".",","));
+                    t.Расход = Double.Parse(transferNode.Attributes["Расход"].Value.Replace(".", ","));
+                    t.Валюта = bs.Валюта;
+
+                    t.ВидДвижения = new CashflowClause
+                    {
+                        Код = transferNode.Attributes["ВидДвиженияКод"].Value,
+                        Наименование = transferNode.Attributes["ВидДвиженияНаименование"].Value,
+                        РазрезДеятельности = "",
+                        ВидДвижения = "",
+                        RowNum = transferNode.Attributes["ВидДвиженияКод"].Value
+                    };
+
+                    t.Company = this.company;
+                    t.НомерДокВходящий = transferNode.Attributes["НомерДокВходящий"].Value;
+                    
+                    bool IsIncome = t.Приход > t.Расход;
+                    if (t.Валюта == "BYR")
+                    {
+                        t.Курс = 1;
+                    }
+                    else
+                    {
+                        t.Курс = Double.Parse(transferNode.Attributes["КурсОплаты"].Value.Replace(".", ","));
+                    }
+                    bs.Transfers.Add(t);
+                }
+                statements.Add(bs);
+            }            
         }
 
         public List<BankStatement> BankStatements
@@ -170,7 +268,7 @@ namespace StatementsImporterLib.Controllers
         {
             List<CashflowComparer> hashes = new List<CashflowComparer>();
             List<tbl_Cashflow> listTs = lts.Where(x => String.IsNullOrEmpty(x.Obj1cDocNumIn)).ToList();
-            foreach(tbl_Cashflow c in listTs)
+            foreach (tbl_Cashflow c in listTs)
             {
                 string h = CashflowComparer.getHashWithoutDocNum(c);
                 if (!hashes.Exists(x => x.hash == h))
@@ -200,10 +298,10 @@ namespace StatementsImporterLib.Controllers
                     };
                     hashes.Add(cc);
                 }
-            }            
-            foreach(CashflowComparer cc in hashes)
+            }
+            foreach (CashflowComparer cc in hashes)
             {
-                if(cc.Action == ImportAction.UPDATE_1CDOCNUMIN)
+                if (cc.Action == ImportAction.UPDATE_1CDOCNUMIN)
                 {
                     //Console.WriteLine("Update 1C DocNumIn");
                     db.tbl_Cashflow.FirstOrDefault(x => x.ID == cc.objTs.ID).Obj1cDocNumIn = cc.obj1C.Obj1cDocNumIn;
@@ -211,137 +309,106 @@ namespace StatementsImporterLib.Controllers
             }
             db.SaveChanges();
         }
+        StreamWriter importLogFile;
+
         public void RunExport(string connectionString, DateTime startDate, DateTime endDate, Company company)
         {
             string companyID = getDs_CompanyID(company);
-            using (Entities db = new Entities(connectionString))
+            using (Entities db = new Entities(connectionString))    // поднимаем подключение к БД
             {
-                Helper.Log("Соединение с базой установлено.");
                 DateTime compareDate = startDate;
                 do
-                {
-                    //Из выписки 1С за ДАТУ-1 выбирается набор-платежей-1
-                    List<Transfer> list1C = getTransfersFrom1c(compareDate);
-                    //За эту же ДАТУ-1 выбирается набор-платежей-2                    
-                    List<tbl_Cashflow> listTs = getTransfersFromTs(compareDate, companyID, db);
-
-                    // обновить номераДокВходящих для уже импортированных записей    
-                    Update1cDocNumIns(db, list1C, listTs, compareDate);
-                                        
-                    List<CashflowComparer> hashes = new List<CashflowComparer>();
-                    foreach (tbl_Cashflow t in listTs)
-                    {
-                        string h = CashflowComparer.getHash(t);
-                        //if (!hashes.Exists(x => x.hash == h))
-                        //{
-                            CashflowComparer cc = new CashflowComparer()
-                            {
-                                hash = h,
-                                objTs = t
-                            };
-                            hashes.Add(cc);
-                        //}                        
-                    }
-                    foreach (Transfer t in list1C)
-                    {
-                        tbl_Cashflow c = CreateCashflow(db, t, compareDate);
-                        string h = CashflowComparer.getHash(c);
-                        if (hashes.Exists(x => x.hash == h))
-                        {
-                            hashes.FirstOrDefault(x => x.hash == h).obj1C = c;
-                        }
-                        else
-                        {
-                            CashflowComparer cc = new CashflowComparer()
-                            {
-                                hash = h,
-                                obj1C = c
-                            };
-                            hashes.Add(cc);
-                        }
-                    }
-                    // актулизировать список 
-                    foreach (CashflowComparer cc in hashes)
-                    {
-                        PrintCompareResultInfo(cc);                        
-                        //Если хэш из набора-1с есть в наборе-ТС - всё норм, оставляем как есть                        
-                        switch (cc.Action)
-                        {
-                            case ImportAction.DELETE_FROM_TS:
-                                //Если хэш из набора-ТС отсутствует в наборе-1С - удаляем этот платёж из ТС                                                                        
-                                db.tbl_Cashflow.Remove(cc.objTs);
-                                break;
-                            case ImportAction.ADD_TO_TS:
-                                //Если хэш из набора-1с отсутствует в наборе-ТС - импортируем этот платёж из 1С в ТС
-                                db.tbl_Cashflow.Add(cc.obj1C);
-                                // раздаём права на новый платёж
-                                // получаем менеджера записи    
-                                if(cc.obj1C.ManagerID.HasValue)
-                                {
-                                    if(db.tbl_CashflowRight.Count(x => x.RecordID == cc.obj1C.ID && x.AdminUnitID == cc.obj1C.ManagerID) == 0)
-                                    {
-                                        Guid managerAdminUnitID = db.tbl_AdminUnit.FirstOrDefault(x => x.UserContactID == cc.obj1C.ManagerID).ID;
-                                        tbl_CashflowRight rights = new tbl_CashflowRight
-                                        {
-                                            AdminUnitID = managerAdminUnitID,
-                                            CanChangeAccess = 1,
-                                            CanDelete = 0,
-                                            CanRead = 1,
-                                            CanWrite = 1,
-                                            ID = Guid.NewGuid(),
-                                            RecordID = cc.obj1C.ID
-                                        };
-                                        db.tbl_CashflowRight.Add(rights);
-                                    }
-                                }
-                                break;
-                        }                        
-                    }
-                    db.SaveChanges();
+                {                    
+                    UpdateCashflowForDate(compareDate, companyID, db); // для каждой даты осуществляем сравнение выгруженнных из 1С и существующих в ТС платежей
                     compareDate = compareDate.AddDays(1);
-                } while (compareDate <= endDate);
-
-                Helper.Log("Сравнение завершёно.\n");
+                } while (compareDate <= endDate);       //  проходим по всем датам из указанного в конфигурационном файле диапазона
             }
         }
-        void PrintCompareResultInfo(CashflowComparer cc)
+        List<CashflowComparer> FormHashesList(List<tbl_Cashflow> listTs, List<Transfer> list1C, DateTime compareDate, Entities db)
         {
-            string target = "x";
-            int subLength = 4;
-            
-            if (cc.obj1C == null || cc.objTs == null)
+            List<CashflowComparer> hashes = new List<CashflowComparer>();
+            foreach (tbl_Cashflow t in listTs)
             {
-                DateTime dt = (cc.obj1C != null) ? cc.obj1C.ActualDate.Value : cc.objTs.ActualDate.Value;
-                Console.Write(dt.ToShortDateString() + " ");
-           
-                if (cc.obj1C != null)
-                { 
-                    
-                    target = cc.obj1C.Subject;
-                    Console.Write("{0,10} {1,5} {2,5} | ", cc.obj1C.Amount.GetValueOrDefault(),
-                                            cc.obj1C.PayerID.GetValueOrDefault().ToString().Substring(0, subLength),
-                                            cc.obj1C.RecipientID.GetValueOrDefault().ToString().Substring(0, subLength));
+                string h = CashflowComparer.getHash(t);
+                CashflowComparer cc = new CashflowComparer()
+                {
+                    hash = h,
+                    objTs = t
+                };
+                hashes.Add(cc);
+            }
+            foreach (Transfer t in list1C)
+            {
+                tbl_Cashflow c = CreateCashflow(db, t, compareDate);
+                string h = CashflowComparer.getHash(c);
+                if (hashes.Exists(x => x.hash == h))
+                {
+                    hashes.FirstOrDefault(x => x.hash == h).obj1C = c;
                 }
                 else
                 {
-                    Console.Write("{0,10} {1,5} {2,5} | ", "x", "x", "x");
+                    CashflowComparer cc = new CashflowComparer()
+                    {
+                        hash = h,
+                        obj1C = c
+                    };
+                    hashes.Add(cc);
                 }
-                if (cc.objTs != null)
+            }
+            return hashes;
+        }
+        void WriteHashesDiffToDb(List<CashflowComparer> hashes, Entities db)
+        {
+            foreach (CashflowComparer cc in hashes)
+            {
+                switch (cc.Action)
                 {
-                    target = cc.objTs.Subject;
-                    Console.Write("{0,10} {1,5} {2,5} {3,14} {4}", cc.objTs.Amount.GetValueOrDefault(),
-                                        cc.objTs.PayerID.GetValueOrDefault().ToString().Substring(0, subLength),
-                                        cc.objTs.RecipientID.GetValueOrDefault().ToString().Substring(0, subLength),
-                                        cc.Action, target);
+                    case ImportAction.DELETE_FROM_TS:   //Если хэш из набора-ТС отсутствует в наборе-1С - удаляем этот платёж из ТС                                                                                                    
+                        db.tbl_Cashflow.Remove(cc.objTs);
+                        cc.PrintCompareResultInfo();
+                        db.SaveChanges();
+                        break;
+                    case ImportAction.ADD_TO_TS:        //Если хэш из набора-1с отсутствует в наборе-ТС - импортируем этот платёж из 1С в ТС                            
+                        db.tbl_Cashflow.Add(cc.obj1C);
+                        GrantToManagerAccessToCashflow(cc, db); // раздаём права на новый платёж его менеджеру    
+                        cc.PrintCompareResultInfo();
+                        db.SaveChanges();
+                        break;                    
                 }
-                else
-                {
-                    Console.Write("{0,10} {1,5} {2,5} {3,14} {4}", "x", "x", "x", cc.Action, target);
-                }
-
-                Console.Write("\n");
             }
         }
+        void GrantToManagerAccessToCashflow(CashflowComparer cc, Entities db)
+        {
+            if (cc.obj1C.ManagerID.HasValue) 
+            {
+                if (db.tbl_CashflowRight.Count(x => x.RecordID == cc.obj1C.ID && x.AdminUnitID == cc.obj1C.ManagerID) == 0)
+                {
+                    Guid managerAdminUnitID = db.tbl_AdminUnit.FirstOrDefault(x => x.UserContactID == cc.obj1C.ManagerID).ID;
+                    tbl_CashflowRight rights = new tbl_CashflowRight
+                    {
+                        AdminUnitID = managerAdminUnitID,
+                        CanChangeAccess = 1,
+                        CanDelete = 0,
+                        CanRead = 1,
+                        CanWrite = 1,
+                        ID = Guid.NewGuid(),
+                        RecordID = cc.obj1C.ID
+                    };
+                    db.tbl_CashflowRight.Add(rights);
+                }
+            }
+        }
+        void UpdateCashflowForDate(DateTime compareDate, string companyID, Entities db)
+        {
+            Console.WriteLine(compareDate.ToShortDateString());
+
+            List<Transfer> list1C = getTransfersFrom1c(compareDate);                    // выбираем платежи из выписки 1С на дату
+            List<tbl_Cashflow> listTs = getTransfersFromTs(compareDate, companyID, db); // выбираем платежи из ТС на дату
+            Update1cDocNumIns(db, list1C, listTs, compareDate);                         // обновить номераДокВходящих для уже импортированных записей // НЕ ПОМНЮ, ЗАЧЕМ ЭТО 
+            List<CashflowComparer> hashes = FormHashesList(listTs, list1C, compareDate, db);    // формируем список хэшей - сравнений платежей из 1С и ТС
+            WriteHashesDiffToDb(hashes, db);        // актулизировать список по хэшам            
+        }
+        
         public void ExportToServer(string connectionstring)
         {
 
@@ -478,7 +545,8 @@ namespace StatementsImporterLib.Controllers
             Double res = 0;
             List<DataRow> rows = ImportedRows.Where(r => (double)r[0] > transferBaseGUID).ToList();
             DataRow subconto = rows.FirstOrDefault(r => r[2].ToString() == AttributeName);
-            Double.TryParse(subconto[5].ToString(), out res);
+            string amount = subconto[5].ToString().Replace(".",",");
+            Double.TryParse(amount, out res);
             return res;
         }
         private double GetTransferRate(bool IsIncome, double StatementStartRowIndex, double StatementEndRowIndex, double TransferStartRowIndex, double TransferEndRowIndex)
@@ -592,7 +660,7 @@ namespace StatementsImporterLib.Controllers
         //НомерДокВходящий
         private string GetTransferAttribute(string AttributeName, double transferBaseGUID)
         {
-            string res = "";            
+            string res = "";
             List<DataRow> rows = ImportedRows.Where(r => (double)r[0] > transferBaseGUID).ToList();
             DataRow AttributeField = rows.FirstOrDefault(r => r[2].ToString() == AttributeName);
             if (AttributeField == null)
@@ -600,23 +668,54 @@ namespace StatementsImporterLib.Controllers
             res = AttributeField[5].ToString();
             return res;
         }
+        List<CashflowClause> clausesInDbf;
+
+        private List<CashflowClause> GetCashflowClause1cList()
+        {
+            this.clausesInDbf = new List<CashflowClause>();
+            List<CashflowClause> cashflows = new List<CashflowClause>();
+            string cashflowClauseAttributeName = "Справочник.ДвиженияДенежныхСредств";
+
+            List<DataRow> cashflowHeaderRows = this.ImportedRows.Where(r => r[3].ToString() == cashflowClauseAttributeName && r[1].ToString() == "0").ToList();
+            foreach (DataRow cashflowHeaderRow in cashflowHeaderRows)
+            {
+                Double cashflowClauseCode = 0;
+                Double.TryParse(cashflowHeaderRow[0].ToString(), out cashflowClauseCode);
+
+                CashflowClause clause = GetCashflowClauseDetails(cashflowClauseCode);
+                this.clausesInDbf.Add(clause);
+            }
+
+            return cashflows;
+        }
+
         private CashflowClause GetTransferCashflowAccount(double transferBaseGUID)
         {
-            CashflowClause res = new CashflowClause();
+            if (this.clausesInDbf == null)
+            {
+                this.GetCashflowClause1cList();
+            }
+
             string cashflowClauseAttributeName = "ВидДвижения";
-            
-            Double cashflowClauseCode = 0;
+
             List<DataRow> rows = ImportedRows.Where(r => (double)r[0] > transferBaseGUID).ToList();
             DataRow AttributeField = rows.FirstOrDefault(r => r[2].ToString() == cashflowClauseAttributeName);
             if (AttributeField == null)
                 return null;
-            Double.TryParse(AttributeField[5].ToString(), out cashflowClauseCode);
-            
-            res.Код = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Код")[5].ToString();
-            res.Наименование = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Наименование")[5].ToString();
-            res.ВидДвижения = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "ВидДвижения")[5].ToString();
-            res.РазрезДеятельности = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "РазрезДеятельности")[5].ToString();
-           
+            string cashflowClauseCode = AttributeField[5].ToString();
+
+            return this.clausesInDbf.FirstOrDefault(x => x.RowNum == cashflowClauseCode);
+        }
+        private CashflowClause GetCashflowClauseDetails(double cashflowClauseCode)
+        {
+            CashflowClause res = new CashflowClause();
+
+            res.RowNum = cashflowClauseCode.ToString();
+            res.Код = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Код")[5].ToString().Trim();
+            res.Наименование = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "Наименование")[5].ToString().Trim();
+            res.ВидДвижения = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "ВидДвижения")[5].ToString().Trim();
+            res.РазрезДеятельности = ImportedRows.FirstOrDefault(r => (double)r[1] == cashflowClauseCode && r[2].ToString() == "РазрезДеятельности")[5].ToString().Trim();
+
             return res;
         }
         private string GetTransferAttributeName(string AttributeName, double transferBaseGUID)
@@ -631,22 +730,10 @@ namespace StatementsImporterLib.Controllers
             res = ImportedRows.FirstOrDefault(r => (double)r[0] == AttributeGuid)[2].ToString();
             return res;
         }
-        private string ParseContractNumber(string ContractName)
-        {
-            string Number = "";
-            int start = ContractName.IndexOf("№");
-            if (start < 0)
-                return "";
-            Number = ContractName.Substring(start + 1);
-            int end = Number.IndexOf(" ");
-            if (end < 0)
-                return "";
-            Number = Number.Substring(0, end + 1);
-            return Number;
-        }
+        
         #endregion
 
-        private enum CashflowType { Income, Expense };
+        
         private List<BankStatement> statements = new List<BankStatement>();
 
         #region private methods
@@ -659,12 +746,12 @@ namespace StatementsImporterLib.Controllers
         public tbl_Cashflow CreateCashflow(Entities db, Transfer t, string ДатаДок)
         {
             tbl_Cashflow c = new tbl_Cashflow();
-            
-            c.ModifiedByID = GetSupervisorID();
+
+            c.ModifiedByID = Helper.GetSupervisorID();
             c.ModifiedOn = DateTime.Now;
-            c.CreatedByID = GetSupervisorID();
-            c.CreatedOn = DateTime.Now;            
-            
+            c.CreatedByID = Helper.GetSupervisorID();
+            c.CreatedOn = DateTime.Now;
+
             string cID = getDs_CompanyID(t.Company);
             c.CompanyID = new Guid(cID);
             // 01 НОМЕР
@@ -688,7 +775,7 @@ namespace StatementsImporterLib.Controllers
             // 05 СТАТЬЯ NULL
             // 06 КАТЕГОРИЯ NULL
             // 07 ОТВЕТСТВЕННЫЙ
-            c.OwnerID = GetOwnerID();
+            c.OwnerID = Helper.GetOwnerID();
 
             // 08 СОСТОЯНИЕ
             c.StatusID = new Guid(Constants.CashflowStateFinishedID);
@@ -707,14 +794,14 @@ namespace StatementsImporterLib.Controllers
 
             // 15 ТИП РАСХОДА-ДОХОДА NULL
             // 16 ПЕРИОД
-            c.PeriodID = GetPeriodID(db, c.ActualDate.Value);
+            c.PeriodID = Helper.GetPeriodID(db, c.ActualDate.Value);
 
             // 00 Контрагент
             string comments = "";
-            Guid? AccountID = GetAccountID(db, t);
+            Guid? AccountID = DbHelper.GetAccountID(db, t);
             if (!AccountID.HasValue)
             {
-                comments += "Контрагент не найден: " + GetAccountNameCode(t) + ".\r\n";
+                comments += "Контрагент не найден: " + Helper.GetAccountNameCode(t) + ".\r\n";
             }
             // 19 УЧИТЫВАТЬ ПРИ ВЗАИМОРАСЧЁТАХ NULL
             // 20 ДЕБИТОР-КРЕДИТОР NULL
@@ -722,7 +809,7 @@ namespace StatementsImporterLib.Controllers
             c.AutocalcAmount = 1;
 
             // 22 ВАЛЮТ
-            c.CurrencyID = ConvertToCurrencyID(t.Валюта);
+            c.CurrencyID = DbHelper.ConvertToCurrencyID(t.Валюта);
 
             // 23 СУММА
             if (cashflowType == CashflowType.Income)
@@ -738,41 +825,41 @@ namespace StatementsImporterLib.Controllers
             // 26 КОНТАКТ NULL
             // 27 СЧЁТ NULL
             // 28 ДОГОВОР
-            Guid? ContractID = GetContractID(db, t);
+            Guid? ContractID = DbHelper.GetContractID(db, t);
             if (ContractID.HasValue)
             {
                 c.ContractID = ContractID;
             }
             else
             {
-                comments += "Договор не найден: " + GetContractName(t) + ".";
+                comments += "Договор не найден: " + DbHelper.GetContractName(t) + ".";
             }
 
             // 29 ПРОДАЖА - получаем из договора
             if (ContractID.HasValue)
             {
-                c.OpportunityID = GetOpportunityIDFromContract(db, ContractID);
+                c.OpportunityID = DbHelper.GetOpportunityIDFromContract(db, ContractID);
             }
 
             // 30 МЕНЕДЖЕР - получаем из договора
             if (ContractID.HasValue)
             {
-                c.ManagerID = GetManagerIDFromContract(db, ContractID);
+                c.ManagerID = DbHelper.GetManagerIDFromContract(db, ContractID);
             }
             else
                 if (AccountID.HasValue)
                 {
-                    c.ManagerID = GetManagerIDFromAccount(db, AccountID);
+                    c.ManagerID = DbHelper.GetManagerIDFromAccount(db, AccountID);
                 }
                 else
                 {
-                    c.ManagerID = GetDefaultManagerID();
+                    c.ManagerID = DbHelper.GetDefaultManagerID();
                 }
 
             // 31 если найден договор, но не найден контрагент
             if (ContractID.HasValue && !AccountID.HasValue)
             {
-                AccountID = GetAccountIDFromContract(db, ContractID);
+                AccountID = DbHelper.GetAccountIDFromContract(db, ContractID);
             }
 
             // 17 ПЛАТЕЛЬЩИК
@@ -780,11 +867,11 @@ namespace StatementsImporterLib.Controllers
             if (cashflowType == CashflowType.Income)
             {
                 c.PayerID = AccountID;
-                c.RecipientID = GetCompanyID(t.Company);
+                c.RecipientID = DbHelper.GetCompanyID(t.Company);
             }
             else
             {
-                c.PayerID = GetCompanyID(t.Company);
+                c.PayerID = DbHelper.GetCompanyID(t.Company);
                 c.RecipientID = AccountID;
             }
             // если назначение содержит номер счёта
@@ -826,10 +913,13 @@ namespace StatementsImporterLib.Controllers
         {
             tbl_Cashflow c = new tbl_Cashflow();
 
+            //TMP
+            c.MailSent = 1;
+
             c.Obj1cDocNumIn = t.НомерДокВходящий;
-            c.ModifiedByID = GetSupervisorID();
+            c.ModifiedByID = Helper.GetSupervisorID();
             c.ModifiedOn = DateTime.Now;
-            c.CreatedByID = GetSupervisorID();
+            c.CreatedByID = Helper.GetSupervisorID();
             c.CreatedOn = DateTime.Now;
 
             string cID = getDs_CompanyID(t.Company);
@@ -852,11 +942,11 @@ namespace StatementsImporterLib.Controllers
             c.TypeID = GetCashflowTypeID(cashflowType);
 
             // 05 СТАТЬЯ NULL
-            c.ClauseID = GetCashflowClauseID(db, t.ВидДвижения, t.Company);
-            
+            c.ClauseID = DbHelper.GetCashflowClauseID(db, t.ВидДвижения, t.Company);
+
             // 06 КАТЕГОРИЯ NULL
             // 07 ОТВЕТСТВЕННЫЙ
-            c.OwnerID = GetOwnerID();
+            c.OwnerID = Helper.GetOwnerID();
 
             // 08 СОСТОЯНИЕ
             c.StatusID = new Guid(Constants.CashflowStateFinishedID);
@@ -875,14 +965,14 @@ namespace StatementsImporterLib.Controllers
 
             // 15 ТИП РАСХОДА-ДОХОДА NULL
             // 16 ПЕРИОД
-            c.PeriodID = GetPeriodID(db, c.ActualDate.Value);
+            c.PeriodID = Helper.GetPeriodID(db, c.ActualDate.Value);
 
             // 00 Контрагент
             string comments = "";
-            Guid? AccountID = GetAccountID(db, t);
+            Guid? AccountID = DbHelper.GetAccountID(db, t);
             if (!AccountID.HasValue)
             {
-                comments += "Контрагент не найден: " + GetAccountNameCode(t) + ".\r\n";
+                comments += "Контрагент не найден: " + Helper.GetAccountNameCode(t) + ".\r\n";
             }
             // 19 УЧИТЫВАТЬ ПРИ ВЗАИМОРАСЧЁТАХ NULL
             // 20 ДЕБИТОР-КРЕДИТОР NULL
@@ -890,7 +980,7 @@ namespace StatementsImporterLib.Controllers
             c.AutocalcAmount = 1;
 
             // 22 ВАЛЮТ
-            c.CurrencyID = ConvertToCurrencyID(t.Валюта);
+            c.CurrencyID = DbHelper.ConvertToCurrencyID(t.Валюта);
 
             // 23 СУММА
             if (cashflowType == CashflowType.Income)
@@ -906,41 +996,41 @@ namespace StatementsImporterLib.Controllers
             // 26 КОНТАКТ NULL
             // 27 СЧЁТ NULL
             // 28 ДОГОВОР
-            Guid? ContractID = GetContractID(db, t);
+            Guid? ContractID = DbHelper.GetContractID(db, t);
             if (ContractID.HasValue)
             {
                 c.ContractID = ContractID;
             }
             else
             {
-                comments += "Договор не найден: " + GetContractName(t) + ".";
+                comments += "Договор не найден: " + DbHelper.GetContractName(t) + ".";
             }
 
             // 29 ПРОДАЖА - получаем из договора
             if (ContractID.HasValue)
             {
-                c.OpportunityID = GetOpportunityIDFromContract(db, ContractID);
+                c.OpportunityID = DbHelper.GetOpportunityIDFromContract(db, ContractID);
             }
 
             // 30 МЕНЕДЖЕР - получаем из договора
             if (ContractID.HasValue)
             {
-                c.ManagerID = GetManagerIDFromContract(db, ContractID);
+                c.ManagerID = DbHelper.GetManagerIDFromContract(db, ContractID);
             }
             else
                 if (AccountID.HasValue)
                 {
-                    c.ManagerID = GetManagerIDFromAccount(db, AccountID);
+                    c.ManagerID = DbHelper.GetManagerIDFromAccount(db, AccountID);
                 }
                 else
                 {
-                    c.ManagerID = GetDefaultManagerID();
+                    c.ManagerID = DbHelper.GetDefaultManagerID();
                 }
 
             // 31 если найден договор, но не найден контрагент
             if (ContractID.HasValue && !AccountID.HasValue)
             {
-                AccountID = GetAccountIDFromContract(db, ContractID);
+                AccountID = DbHelper.GetAccountIDFromContract(db, ContractID);
             }
 
             // 17 ПЛАТЕЛЬЩИК
@@ -948,13 +1038,15 @@ namespace StatementsImporterLib.Controllers
             if (cashflowType == CashflowType.Income)
             {
                 c.PayerID = AccountID;
-                c.RecipientID = GetCompanyID(t.Company);
+                c.RecipientID = DbHelper.GetCompanyID(t.Company);
             }
             else
             {
-                c.PayerID = GetCompanyID(t.Company);
+                c.PayerID = DbHelper.GetCompanyID(t.Company);
                 c.RecipientID = AccountID;
             }
+
+            c.DebtorCreditorID = c.PayerID;
             // если назначение содержит номер счёта
             string PayDetails = t.НазначениеПлатежа;
             string InvoiceString = "счет ";
@@ -996,68 +1088,9 @@ namespace StatementsImporterLib.Controllers
             db.SaveChanges();
         }
 
-        private Guid? ConvertToCurrencyID(string Code)
-        {
-            Guid? res = null;
-            switch (Code)
-            {
-                case "USD":
-                    res = new Guid(Constants.CurrencyUsdID);
-                    break;
+        
 
-                case "EUR"://?
-                    res = new Guid(Constants.CurrencyEurID);
-                    break;
-
-                case "RUB"://?
-                    res = new Guid(Constants.CurrencyRurID);
-                    break;
-
-                default:
-                    res = new Guid(Constants.CurrencyByrID);
-                    break;
-            }
-            return res;
-        }
-
-        private Guid? GetAccountID(Entities db, Transfer t)
-        {
-            Guid? AccountID = null;
-            Subconto Account = GetSubconto(t, SubcontoType.Контрагент);
-            if (Account != null)
-            {
-                string AccountUNN = Account.Код;
-                AccountUNN = AccountUNN.ToLower().Replace('o', '0').Replace('о', '0'); // заменяем русскую и латинскую букву О на НОЛЬ
-                AccountID = GetAccountID(db, AccountUNN);
-            }
-            return AccountID;
-        }
-
-        private Guid? GetAccountID(Entities db, string AccountUNN)
-        {
-            Guid? AccountID = null;
-            tbl_Account a = db.tbl_Account.FirstOrDefault(x => x.Code == AccountUNN);
-            if (a != null)
-                AccountID = a.ID;
-            return AccountID;
-        }
-
-        private Guid? GetAccountIDFromContract(Entities db, Guid? ContractID)
-        {
-            Guid? id = null;
-            id = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID).CustomerID;
-            return id;
-        }
-
-        private string GetAccountNameCode(Transfer t)
-        {
-            string name = "";
-            Subconto Account = GetSubconto(t, SubcontoType.Контрагент);
-            if (Account != null)
-                name = Account.Наименование + " (" + Account.Код + ")";
-            return name;
-        }
-
+        
         private string GetCashflowTypeID(CashflowType type)
         {
             if (type == CashflowType.Income)
@@ -1065,102 +1098,13 @@ namespace StatementsImporterLib.Controllers
             else
                 return Constants.CashflowTypeExpenseID;
         }
-        List<tbl_CashflowClause> clauses = new List<tbl_CashflowClause>();
-        private Guid? GetCashflowClauseID(Entities db, CashflowClause clause1c, Company company)
-        {
-            string clauseCode =  company.ToString() + clause1c.Код;
-            if (clauses.Count == 0)
-            {
-                clauses = (from x in db.tbl_CashflowClause select x).ToList();
-            }
+        
+        
+        
+        ///delete public int ExtraFound = 0;
+        
 
-            if (clauses.Count(x => x.Code == clauseCode) == 0)
-            {
-                //add clause
-                tbl_CashflowClause clauseTs = new tbl_CashflowClause
-                {
-                    ID = Guid.NewGuid(),
-                    Name = clause1c.Наименование,
-                    Code = clauseCode,
-                    CreatedByID = new Guid(Constants.DefaultAdminID),
-                    CreatedOn = DateTime.Now,
-                    Description = clause1c.ВидДвижения + ": " + clause1c.РазрезДеятельности,
-                    ExpenseDevideType = null,
-                    ExpenseTypeID = null,
-                    GroupID = null,
-                    IsTZP = null,
-                    ModifiedByID = new Guid(Constants.DefaultAdminID),
-                    ModifiedOn = DateTime.Now,
-                    TypeID = null
-                };
-                db.tbl_CashflowClause.Add(clauseTs);
-                clauses.Add(clauseTs);
-
-                return clauseTs.ID;
-            }
-            return clauses.FirstOrDefault(x => x.Code == clauseCode).ID;
-        }
-
-        private Guid? GetContractID(Entities db, Transfer t)
-        {
-            Guid? ContractID = null;
-            Subconto Contract = GetSubconto(t, SubcontoType.Договор);
-            if (Contract != null)
-            {
-                string ContractNumber = ParseContractNumber(Contract.Наименование);
-                ContractID = GetContractID(db, ContractNumber);
-            }
-            return ContractID;
-        }
-        public int ExtraFound = 0;
-        private Guid? GetContractID(Entities db, string ContractNumber)
-        {
-            char[] alph_en = { 'E', 'T', 'O', 'P', 'A', 'H', 'K', 'X', 'C', 'B', 'M' };
-            char[] alph_ru = { 'Е', 'Т', 'О', 'Р', 'А', 'Н', 'К', 'Х', 'С', 'В', 'М' };
-
-            Guid? ContractID = null;
-            tbl_Contract a = db.tbl_Contract.FirstOrDefault(x => x.ContractNumber == ContractNumber);
-            if (a != null)
-                ContractID = a.ID;
-            else
-            {
-                for (int i = 0; i < alph_en.Length; i++)
-                {
-                    if (ContractNumber.Contains(alph_en[i]))
-                    {
-                        string cn = ContractNumber.Replace(alph_en[i], alph_ru[i]);
-                        a = db.tbl_Contract.FirstOrDefault(x => x.ContractNumber == cn);
-                        if (a != null)
-                        {
-                            ContractID = a.ID;
-                            ExtraFound++;
-                            break;
-                        }
-                    }
-                    if (ContractNumber.Contains(alph_ru[i]))
-                    {
-                        string cn = ContractNumber.Replace(alph_ru[i], alph_en[i]);
-                        a = db.tbl_Contract.FirstOrDefault(x => x.ContractNumber == cn);
-                        if (a != null)
-                        {
-                            ContractID = a.ID;
-                            ExtraFound++;
-                            break;
-                        }
-                    }
-                }
-            }
-            return ContractID;
-        }
-
-        private string GetContractName(Transfer t)
-        {
-            string name = "";
-            Subconto Contract = GetSubconto(t, SubcontoType.Договор);
-            if (Contract != null)
-                name = Contract.Наименование;
-            return name;
-        }
+       
 
         private DateTime GetDateTime(string date)
         {
@@ -1173,79 +1117,30 @@ namespace StatementsImporterLib.Controllers
         {
             return new Guid(Constants.CashflowStateFinishedID);
         }
-        private Guid GetDefaultManagerID()
-        {
-            return new Guid(Constants.DefaultManagerID);
-        }
-        private Guid? GetManagerIDFromAccount(Entities db, Guid? AccountID)
-        {
-            Guid? id = null;
-            id = db.tbl_Account.FirstOrDefault(x => x.ID == AccountID).OwnerID;
-            return id;
-        }
+        
 
-        private Guid? GetManagerIDFromContract(Entities db, Guid? ContractID)
-        {
-            Guid? id = null;
-            tbl_Contract contract = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID);
-            id = contract.OwnerID;
-            return id;
-        }
-
-        private Guid? GetCompanyID(Company company)
-        {
-            switch (company)
-            {
-                case Company.MS:
-                    return new Guid(Constants.Company_MS);
-                case Company.NE:
-                    return new Guid(Constants.Company_NE);
-                case Company.SP:
-                    return new Guid(Constants.Company_SP);
-                case Company.ZA:
-                    return new Guid(Constants.Company_ZA);
-                default:
-                    return new Guid(Constants.Company_MS);
-            }
-
-        }
-
+        
+        int cashflowCount = 0;
         private string GetNextNumber(Entities db)
         {
-            string num = "1С" + (db.tbl_Cashflow.Count() + 1).ToString();
+            string num = "1С" + (db.tbl_Cashflow.Count() + this.cashflowCount++ + 1).ToString();
             return num;
         }
 
-        private Guid? GetOpportunityIDFromContract(Entities db, Guid? ContractID)
-        {
-            Guid? id = null;
-            id = db.tbl_Contract.FirstOrDefault(x => x.ID == ContractID).OpportunityID;
-            return id;
-        }
+        
 
-        private Guid? GetOwnerID()
-        {
-            return new Guid(Constants.CashflowOwnerID);
-        }
+        
 
-        private Guid? GetSupervisorID()
-        {
-            return new Guid("251FB9AC-C17E-4DF7-A0CB-D591FDB97462");
-        }
-
-        private Guid? GetPeriodID(Entities db, DateTime date)
-        {
-            tbl_Period p = db.tbl_Period.FirstOrDefault(x => x.StartDate <= date && date <= x.DueDate);
-            if (p == null)
-                return null;
-            else
-                return p.ID;
-        }
+        
 
         #endregion private methods
     }
-    enum ImportAction { NO_ACTION, NO_ACTION_FOR_NULLS, UPDATE_ALL, UPDATE_AMOUNT, UPDATE_PAYER, UPDATE_RECEIVER
-                        , UPDATE_SUBJECT, ADD_TO_TS, DELETE_FROM_TS, UPDATE_1CDOCNUMIN}
+    enum ImportAction
+    {
+        NO_ACTION, NO_ACTION_FOR_NULLS, UPDATE_ALL, UPDATE_AMOUNT, UPDATE_PAYER,
+        UPDATE_RECEIVER
+            , UPDATE_SUBJECT, ADD_TO_TS, DELETE_FROM_TS, UPDATE_1CDOCNUMIN
+    }
     class CashflowComparer
     {
         public static string getHashWithoutDocNum(tbl_Cashflow c)
@@ -1255,14 +1150,14 @@ namespace StatementsImporterLib.Controllers
         }
         public static string getHash(tbl_Cashflow c)
         {
-            string[] keys = { ((long)c.Amount).ToString(), c.PayerID.ToString(), c.RecipientID.ToString(), c.Obj1cDocNumIn };
+            string[] keys = { ((long)c.Amount).ToString(), c.PayerID.ToString(), c.RecipientID.ToString() /*, c.Obj1cDocNumIn*/ };
             return Helper.CalculateMD5Hash(keys);
         }
         public string hash { get; set; }
         public tbl_Cashflow obj1C { get; set; }
         public tbl_Cashflow objTs { get; set; }
 
-        public ImportAction  Action
+        public ImportAction Action
         {
             get
             {
@@ -1281,74 +1176,93 @@ namespace StatementsImporterLib.Controllers
                         && obj1C.Obj1cDocNumIn == objTs.Obj1cDocNumIn)
                     {
                         return ImportAction.NO_ACTION;
-                    } else
-                    if (obj1C.Amount == objTs.Amount
-                        && obj1C.PayerID == objTs.PayerID
-                        && obj1C.RecipientID == objTs.RecipientID
-                        && obj1C.Subject == objTs.Subject
-                        && obj1C.Obj1cDocNumIn != objTs.Obj1cDocNumIn)
-                    {
-                        return ImportAction.UPDATE_1CDOCNUMIN;
                     }
                     else
-                        if (obj1C.Amount != objTs.Amount
-                        && obj1C.PayerID == objTs.PayerID
-                        && obj1C.RecipientID == objTs.RecipientID
-                        && obj1C.Subject == objTs.Subject)
+                        if (obj1C.Amount == objTs.Amount
+                            && obj1C.PayerID == objTs.PayerID
+                            && obj1C.RecipientID == objTs.RecipientID
+                            && obj1C.Subject == objTs.Subject
+                            && obj1C.Obj1cDocNumIn != objTs.Obj1cDocNumIn)
                         {
-                            return ImportAction.UPDATE_AMOUNT;
+                            return ImportAction.UPDATE_1CDOCNUMIN;
                         }
                         else
-                            if (obj1C.Amount == objTs.Amount
-                            && obj1C.PayerID != objTs.PayerID
+                            if (obj1C.Amount != objTs.Amount
+                            && obj1C.PayerID == objTs.PayerID
                             && obj1C.RecipientID == objTs.RecipientID
                             && obj1C.Subject == objTs.Subject)
                             {
-                                return ImportAction.UPDATE_PAYER;
+                                return ImportAction.UPDATE_AMOUNT;
                             }
                             else
                                 if (obj1C.Amount == objTs.Amount
-                                && obj1C.PayerID == objTs.PayerID
-                                && obj1C.RecipientID != objTs.RecipientID
+                                && obj1C.PayerID != objTs.PayerID
+                                && obj1C.RecipientID == objTs.RecipientID
                                 && obj1C.Subject == objTs.Subject)
                                 {
-                                    return ImportAction.UPDATE_RECEIVER;
+                                    return ImportAction.UPDATE_PAYER;
                                 }
                                 else
                                     if (obj1C.Amount == objTs.Amount
                                     && obj1C.PayerID == objTs.PayerID
-                                    && obj1C.RecipientID == objTs.RecipientID
-                                    && obj1C.Subject != objTs.Subject)
+                                    && obj1C.RecipientID != objTs.RecipientID
+                                    && obj1C.Subject == objTs.Subject)
                                     {
-                                        return ImportAction.UPDATE_SUBJECT;
+                                        return ImportAction.UPDATE_RECEIVER;
                                     }
+                                    else
+                                        if (obj1C.Amount == objTs.Amount
+                                        && obj1C.PayerID == objTs.PayerID
+                                        && obj1C.RecipientID == objTs.RecipientID
+                                        && obj1C.Subject != objTs.Subject)
+                                        {
+                                            return ImportAction.UPDATE_SUBJECT;
+                                        }
                     return ImportAction.NO_ACTION;
 
                 }
             }
         }
-    }
-    public class Constants
-    {
-        public const string CashflowKassaID = "ADEC1E41-17EE-4B02-B04E-D677DEA48D39"; // основной расчетный счёт
-        public const string CashflowOwnerID = "04AC88F1-CB81-4179-AA70-156DEE3AA022"; // Довгалёва
-        public const string CashflowStateFinishedID = "FDEA47BE-53FE-4730-BF4F-4F44C3B5D61A";
-        public const string CashflowTypeExpenseID = "{484C8429-DABF-482A-BC7B-4C75D1436A1B}";
-        public const string CashflowTypeIncomeID = "{358DA0CD-9EA6-43B8-A099-CD77DA3C6114}";
 
-        //public static string CashflowTypeExpenseID = "ct_Charge";
-        //public static string CashflowTypeIncomeID = "ct_Income";
-        public const string CurrencyByrID = "49744485-ACC1-4729-9BE6-C595E01DA2FF";
-        public const string DefaultManagerID = "E712815E-ABF7-41C5-B4F4-3A6462BF76AD"; //Сорокина
-        public const string DefaultAdminID = "4C6876A1-3A5F-4877-BB5C-92709B3896EE"; //Башлыкевич
+        public void PrintCompareResultInfo()
+        {            
+            string target = "x";
+            int subLength = 4;
+            string stringToWrite = "";
 
-        public const string CurrencyEurID = "D18AAED6-14F9-435C-9606-0E90CAE816F9";
-        public const string CurrencyRurID = "CC997518-B672-4F0B-AD9B-0668F06AE404";
-        public const string CurrencyUsdID = "D18AAED6-14F9-435C-9606-0E90CAE816F8";
+            if (this.obj1C == null || this.objTs == null)
+            {
+                DateTime dt = (this.obj1C != null) ? this.obj1C.ActualDate.Value : this.objTs.ActualDate.Value;
+                stringToWrite = dt.ToShortDateString() + " ";
 
-        public const string Company_MS = "486AF303-9532-462C-A0A4-CB41A0C1C837";
-        public const string Company_ZA = "C7202761-078E-4AEB-9531-7A755803F9C0";
-        public const string Company_NE = "BFF3459D-61D5-4886-9723-8572B07721F2";
-        public const string Company_SP = "DB12B73C-E54C-48D7-B51A-626B00E1392C";
-    }
+                if (this.obj1C != null)
+                {
+
+                    target = this.obj1C.Subject;
+                    stringToWrite += String.Format("{0,10} {1,5} {2,5} | ", this.obj1C.Amount.GetValueOrDefault(),
+                                            this.obj1C.PayerID.GetValueOrDefault().ToString().Substring(0, subLength),
+                                            this.obj1C.RecipientID.GetValueOrDefault().ToString().Substring(0, subLength));
+                }
+                else
+                {
+                    stringToWrite += String.Format("{0,10} {1,5} {2,5} | ", "x", "x", "x");
+                }
+                if (this.objTs != null)
+                {
+                    target = this.objTs.Subject;
+                    stringToWrite += String.Format("{0,10} {1,5} {2,5} {3,14} {4}", this.objTs.Amount.GetValueOrDefault(),
+                                        this.objTs.PayerID.GetValueOrDefault().ToString().Substring(0, subLength),
+                                        this.objTs.RecipientID.GetValueOrDefault().ToString().Substring(0, subLength),
+                                        this.Action, target);
+                }
+                else
+                {
+                    stringToWrite += String.Format("{0,10} {1,5} {2,5} {3,14} {4}", "x", "x", "x", this.Action, target);
+                }
+
+                stringToWrite += "\n";
+                Console.Write(stringToWrite);                
+            }
+        }
+    }    
 }

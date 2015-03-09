@@ -16,6 +16,8 @@ namespace StatementsImporterLib.ADO
     {
         public tbl_Cashflow()
         {
+            this.tbl_CashflowInCashflow = new HashSet<tbl_CashflowInCashflow>();
+            this.tbl_CashflowInCashflow1 = new HashSet<tbl_CashflowInCashflow>();
             this.tbl_CashflowRight = new HashSet<tbl_CashflowRight>();
         }
     
@@ -63,17 +65,21 @@ namespace StatementsImporterLib.ADO
         public string Comments { get; set; }
         public Nullable<System.Guid> CompanyID { get; set; }
         public string Obj1cDocNumIn { get; set; }
+        public string UID1C { get; set; }
     
         public virtual tbl_Account tbl_Account { get; set; }
         public virtual tbl_Account tbl_Account1 { get; set; }
         public virtual tbl_Account tbl_Account2 { get; set; }
+        public virtual tbl_CashflowClause tbl_CashflowClause { get; set; }
         public virtual tbl_Contact tbl_Contact { get; set; }
+        public virtual tbl_Contract tbl_Contract { get; set; }
+        public virtual ICollection<tbl_CashflowInCashflow> tbl_CashflowInCashflow { get; set; }
+        public virtual ICollection<tbl_CashflowInCashflow> tbl_CashflowInCashflow1 { get; set; }
         public virtual tbl_Invoice tbl_Invoice { get; set; }
+        public virtual tbl_CashflowInCashflow tbl_CashflowInCashflow2 { get; set; }
         public virtual tbl_Contact tbl_Contact1 { get; set; }
         public virtual tbl_Contact tbl_Contact2 { get; set; }
         public virtual tbl_Period tbl_Period { get; set; }
         public virtual ICollection<tbl_CashflowRight> tbl_CashflowRight { get; set; }
-        public virtual tbl_Contract tbl_Contract { get; set; }
-        public virtual tbl_CashflowClause tbl_CashflowClause { get; set; }
     }
 }

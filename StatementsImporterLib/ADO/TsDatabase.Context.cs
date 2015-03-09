@@ -27,12 +27,13 @@ namespace StatementsImporterLib.ADO
     
         public virtual DbSet<tbl_Account> tbl_Account { get; set; }
         public virtual DbSet<tbl_AdminUnit> tbl_AdminUnit { get; set; }
-        public virtual DbSet<tbl_Cashflow> tbl_Cashflow { get; set; }
         public virtual DbSet<tbl_CashflowRight> tbl_CashflowRight { get; set; }
         public virtual DbSet<tbl_Contact> tbl_Contact { get; set; }
         public virtual DbSet<tbl_Invoice> tbl_Invoice { get; set; }
         public virtual DbSet<tbl_Period> tbl_Period { get; set; }
         public virtual DbSet<tbl_Contract> tbl_Contract { get; set; }
         public virtual DbSet<tbl_CashflowClause> tbl_CashflowClause { get; set; }
+        public virtual DbSet<tbl_CashflowInCashflow> tbl_CashflowInCashflow { get; set; }
+        public virtual DbSet<tbl_Cashflow> tbl_Cashflow { get; set; }
     }
 }

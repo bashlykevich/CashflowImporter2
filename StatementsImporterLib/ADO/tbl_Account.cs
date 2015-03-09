@@ -16,14 +16,14 @@ namespace StatementsImporterLib.ADO
     {
         public tbl_Account()
         {
-            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
-            this.tbl_Cashflow1 = new HashSet<tbl_Cashflow>();
-            this.tbl_Cashflow2 = new HashSet<tbl_Cashflow>();
             this.tbl_Contact2 = new HashSet<tbl_Contact>();
             this.tbl_Invoice = new HashSet<tbl_Invoice>();
             this.tbl_Invoice1 = new HashSet<tbl_Invoice>();
             this.tbl_Contract = new HashSet<tbl_Contract>();
             this.tbl_Contract1 = new HashSet<tbl_Contract>();
+            this.tbl_Cashflow = new HashSet<tbl_Cashflow>();
+            this.tbl_Cashflow1 = new HashSet<tbl_Cashflow>();
+            this.tbl_Cashflow2 = new HashSet<tbl_Cashflow>();
         }
     
         public System.Guid ID { get; set; }
@@ -74,13 +74,13 @@ namespace StatementsImporterLib.ADO
     
         public virtual tbl_Contact tbl_Contact { get; set; }
         public virtual tbl_Contact tbl_Contact1 { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow1 { get; set; }
-        public virtual ICollection<tbl_Cashflow> tbl_Cashflow2 { get; set; }
         public virtual ICollection<tbl_Contact> tbl_Contact2 { get; set; }
         public virtual ICollection<tbl_Invoice> tbl_Invoice { get; set; }
         public virtual ICollection<tbl_Invoice> tbl_Invoice1 { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract { get; set; }
         public virtual ICollection<tbl_Contract> tbl_Contract1 { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow1 { get; set; }
+        public virtual ICollection<tbl_Cashflow> tbl_Cashflow2 { get; set; }
     }
 }

@@ -25,18 +25,6 @@ namespace CashflowImporter2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
-        public string ts_host {
-            get {
-                return ((string)(this["ts_host"]));
-            }
-            set {
-                this["ts_host"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("TSXRM3")]
         public string ts_db {
             get {
@@ -92,6 +80,18 @@ namespace CashflowImporter2.Properties {
             }
             set {
                 this["finish_date"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5.9.136.200")]
+        public string ts_host {
+            get {
+                return ((string)(this["ts_host"]));
+            }
+            set {
+                this["ts_host"] = value;
             }
         }
     }
